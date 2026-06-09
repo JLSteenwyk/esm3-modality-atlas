@@ -1,0 +1,38 @@
+{
+  "_comment": "Config for the scaled descriptive-atlas harvest. The pilot used 199 proteins x 5 conditions x 7 layers, mean-pool only. Scaled run: full 938, 6 conditions (adds function/InterPro), all 48 layers, mean-pool; per-residue at reduced scope.",
+
+  "dataset": {
+    "root": "data/scaled",
+    "accessions": "data/scaled/accessions.txt",
+    "structures": "data/scaled/structures",
+    "structure_annotations": "data/scaled/annotations/structure_annotations.json",
+    "metadata": "data/pilot/annotations/metadata.json"
+  },
+
+  "conditions": ["sequence", "structure", "ss8", "sasa", "function", "all"],
+
+  "layers": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+             16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+             32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47],
+
+  "pooling": {
+    "mean_pool": true,
+    "per_residue": {
+      "enabled": true,
+      "max_proteins": 100,
+      "layers": [0, 8, 16, 24, 32, 40, 47],
+      "dtype": "float16"
+    }
+  },
+
+  "function_modality": {
+    "source": "interpro",
+    "annotation_span": "whole_protein"
+  },
+
+  "runtime": {
+    "device": "cuda",
+    "autocast_dtype": "bfloat16",
+    "dssp_bin_env": "~/anaconda3/envs/dssp/bin"
+  }
+}

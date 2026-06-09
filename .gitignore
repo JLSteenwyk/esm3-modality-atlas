@@ -5,3 +5,6 @@ __pycache__/
 .DS_Store
 *.npz
 !figures/**/*.npz
+
+# scaled dataset (fetched structures + derived annotations, regenerable)
+data/scaled/

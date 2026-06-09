@@ -18,6 +18,7 @@ Outputs:
 
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -28,11 +29,17 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 
-IN_DIR = ROOT / "activations" / "per_protein"
-OUT_DIR = ROOT / "activations" / "by_layer"
-
-
 def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--base", default="activations",
+                    help="activations base dir (e.g. 'activations' or "
+                         "'activations/scaled'); reads <base>/per_protein, "
+                         "writes <base>/by_layer")
+    args = ap.parse_args()
+    base = ROOT / args.base
+    global IN_DIR, OUT_DIR
+    IN_DIR = base / "per_protein"
+    OUT_DIR = base / "by_layer"
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     per_protein_files = sorted(IN_DIR.glob("*.npz"))
