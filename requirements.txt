@@ -1,0 +1,11 @@
+torch>=2.4
+esm>=3.2
+numpy
+scipy
+scikit-learn
+umap-learn
+matplotlib>=3.8
+pillow
+biopython
+pandas
+tqdm
