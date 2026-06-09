@@ -1,0 +1,574 @@
+{
+  "meta": {
+    "n_proteins": 199,
+    "conditions_order": [
+      "sequence",
+      "structure",
+      "ss8",
+      "sasa",
+      "all"
+    ],
+    "layers": [
+      0,
+      8,
+      16,
+      24,
+      32,
+      40,
+      47
+    ],
+    "probe": "logistic regression, protein-grouped 5-fold CV, standardized 1536-d features",
+    "effective_rank": "exp(entropy of covariance eigenspectrum)",
+    "n_perm": 200,
+    "n_boot": 200,
+    "seed": 0
+  },
+  "per_layer": {
+    "0": {
+      "probe": {
+        "fulldim": {
+          "accuracy_mean": 1.0,
+          "accuracy_std": 0.0,
+          "chance": 0.2,
+          "recall_by_condition": {
+            "sequence": 1.0,
+            "structure": 1.0,
+            "ss8": 1.0,
+            "sasa": 1.0,
+            "all": 1.0
+          }
+        },
+        "pca3d": {
+          "accuracy_mean": 0.996948717948718,
+          "accuracy_std": 0.004090045001351868,
+          "chance": 0.2,
+          "recall_by_condition": {
+            "sequence": 1.0,
+            "structure": 1.0,
+            "ss8": 0.9849246231155779,
+            "sasa": 1.0,
+            "all": 1.0
+          }
+        }
+      },
+      "dimensionality": {
+        "overall_participation_ratio": 3.6619514919946266,
+        "overall_effective_rank": 5.410258219702659,
+        "within_participation_ratio_mean": 2.9260763353663193,
+        "within_effective_rank_mean": 4.666595383758958,
+        "by_condition": {
+          "sequence": {
+            "participation_ratio": 3.3576314511639325,
+            "effective_rank": 5.494788932874243
+          },
+          "structure": {
+            "participation_ratio": 2.798310251252333,
+            "effective_rank": 3.9651090111032636
+          },
+          "ss8": {
+            "participation_ratio": 3.1342716518954417,
+            "effective_rank": 4.24742682537016
+          },
+          "sasa": {
+            "participation_ratio": 2.3256257666838334,
+            "effective_rank": 3.9938745819101515
+          },
+          "all": {
+            "participation_ratio": 3.0145425558360572,
+            "effective_rank": 5.6317775675369735
+          }
+        }
+      },
+      "significance": {
+        "silhouette": {
+          "observed": 0.6294742329308828,
+          "null_mean": -0.028551263676400332,
+          "null_std": 0.005742834810253546,
+          "p_value": 0.004975124378109453,
+          "ci95": [
+            0.6076997087706607,
+            0.6508224872495842
+          ]
+        },
+        "integration_index": {
+          "observed": 0.5145775737680518,
+          "null_mean": 0.014785611345153967,
+          "null_std": 0.0024788806094677737,
+          "p_value": 0.004975124378109453,
+          "ci95": [
+            0.4697026134330021,
+            0.5829582649197816
+          ]
+        }
+      }
+    },
+    "8": {
+      "probe": {
+        "fulldim": {
+          "accuracy_mean": 1.0,
+          "accuracy_std": 0.0,
+          "chance": 0.2,
+          "recall_by_condition": {
+            "sequence": 1.0,
+            "structure": 1.0,
+            "ss8": 1.0,
+            "sasa": 1.0,
+            "all": 1.0
+          }
+        },
+        "pca3d": {
+          "accuracy_mean": 1.0,
+          "accuracy_std": 0.0,
+          "chance": 0.2,
+          "recall_by_condition": {
+            "sequence": 1.0,
+            "structure": 1.0,
+            "ss8": 1.0,
+            "sasa": 1.0,
+            "all": 1.0
+          }
+        }
+      },
+      "dimensionality": {
+        "overall_participation_ratio": 2.1657215471646896,
+        "overall_effective_rank": 3.8932209559429745,
+        "within_participation_ratio_mean": 3.435114421482423,
+        "within_effective_rank_mean": 7.379068419145135,
+        "by_condition": {
+          "sequence": {
+            "participation_ratio": 1.9094894838255116,
+            "effective_rank": 4.266565551305443
+          },
+          "structure": {
+            "participation_ratio": 4.958513297818989,
+            "effective_rank": 11.062180567053638
+          },
+          "ss8": {
+            "participation_ratio": 3.4471450192223565,
+            "effective_rank": 6.291089993173097
+          },
+          "sasa": {
+            "participation_ratio": 2.8956406401513486,
+            "effective_rank": 5.971050102178045
+          },
+          "all": {
+            "participation_ratio": 3.964783666393909,
+            "effective_rank": 9.304455882015448
+          }
+        }
+      },
+      "significance": {
+        "silhouette": {
+          "observed": 0.5941086613004746,
+          "null_mean": -0.03293310155799122,
+          "null_std": 0.007421505344464967,
+          "p_value": 0.004975124378109453,
+          "ci95": [
+            0.5749800632386443,
+            0.6151595688685264
+          ]
+        },
+        "integration_index": {
+          "observed": 0.5559663990442305,
+          "null_mean": 0.016818370546433255,
+          "null_std": 0.0022859205844532812,
+          "p_value": 0.004975124378109453,
+          "ci95": [
+            0.5246719674340493,
+            0.6021506538598239
+          ]
+        }
+      }
+    },
+    "16": {
+      "probe": {
+        "fulldim": {
+          "accuracy_mean": 1.0,
+          "accuracy_std": 0.0,
+          "chance": 0.2,
+          "recall_by_condition": {
+            "sequence": 1.0,
+            "structure": 1.0,
+            "ss8": 1.0,
+            "sasa": 1.0,
+            "all": 1.0
+          }
+        },
+        "pca3d": {
+          "accuracy_mean": 0.9716923076923077,
+          "accuracy_std": 0.016615384615384608,
+          "chance": 0.2,
+          "recall_by_condition": {
+            "sequence": 1.0,
+            "structure": 0.9949748743718593,
+            "ss8": 0.9346733668341709,
+            "sasa": 0.9296482412060302,
+            "all": 1.0
+          }
+        }
+      },
+      "dimensionality": {
+        "overall_participation_ratio": 2.2788148794835394,
+        "overall_effective_rank": 4.391056725199622,
+        "within_participation_ratio_mean": 5.066556528199687,
+        "within_effective_rank_mean": 12.979893248097085,
+        "by_condition": {
+          "sequence": {
+            "participation_ratio": 3.275633009905502,
+            "effective_rank": 10.261290066030478
+          },
+          "structure": {
+            "participation_ratio": 6.1122340560962165,
+            "effective_rank": 15.469849067546434
+          },
+          "ss8": {
+            "participation_ratio": 5.9894868042168445,
+            "effective_rank": 13.28420040975264
+          },
+          "sasa": {
+            "participation_ratio": 4.54900513415442,
+            "effective_rank": 11.329237752169824
+          },
+          "all": {
+            "participation_ratio": 5.406423636625451,
+            "effective_rank": 14.554888944986047
+          }
+        }
+      },
+      "significance": {
+        "silhouette": {
+          "observed": 0.5375284203897981,
+          "null_mean": -0.03215498439901467,
+          "null_std": 0.008178592603551265,
+          "p_value": 0.004975124378109453,
+          "ci95": [
+            0.521783981773992,
+            0.5568665436867556
+          ]
+        },
+        "integration_index": {
+          "observed": 0.589069761505073,
+          "null_mean": 0.02532475776120324,
+          "null_std": 0.002473428333270299,
+          "p_value": 0.004975124378109453,
+          "ci95": [
+            0.5739576616275657,
+            0.6247290986141556
+          ]
+        }
+      }
+    },
+    "24": {
+      "probe": {
+        "fulldim": {
+          "accuracy_mean": 1.0,
+          "accuracy_std": 0.0,
+          "chance": 0.2,
+          "recall_by_condition": {
+            "sequence": 1.0,
+            "structure": 1.0,
+            "ss8": 1.0,
+            "sasa": 1.0,
+            "all": 1.0
+          }
+        },
+        "pca3d": {
+          "accuracy_mean": 0.9788717948717949,
+          "accuracy_std": 0.005009130388124614,
+          "chance": 0.2,
+          "recall_by_condition": {
+            "sequence": 1.0,
+            "structure": 0.9949748743718593,
+            "ss8": 0.9597989949748744,
+            "sasa": 0.9396984924623115,
+            "all": 1.0
+          }
+        }
+      },
+      "dimensionality": {
+        "overall_participation_ratio": 1.6393125901895966,
+        "overall_effective_rank": 3.3767338707790087,
+        "within_participation_ratio_mean": 5.094279921156764,
+        "within_effective_rank_mean": 15.340345000102522,
+        "by_condition": {
+          "sequence": {
+            "participation_ratio": 3.764297135123666,
+            "effective_rank": 13.945771493611737
+          },
+          "structure": {
+            "participation_ratio": 6.071848605136752,
+            "effective_rank": 16.760904079210924
+          },
+          "ss8": {
+            "participation_ratio": 6.0528575273475305,
+            "effective_rank": 18.66789532992536
+          },
+          "sasa": {
+            "participation_ratio": 4.365026798073711,
+            "effective_rank": 12.282820643043635
+          },
+          "all": {
+            "participation_ratio": 5.21736954010216,
+            "effective_rank": 15.044333454720952
+          }
+        }
+      },
+      "significance": {
+        "silhouette": {
+          "observed": 0.43526694396350524,
+          "null_mean": -0.035159330753521484,
+          "null_std": 0.00846324586625556,
+          "p_value": 0.004975124378109453,
+          "ci95": [
+            0.42305952969116156,
+            0.4557562596119197
+          ]
+        },
+        "integration_index": {
+          "observed": 0.5724813968041924,
+          "null_mean": 0.025355125017083046,
+          "null_std": 0.002112459378148991,
+          "p_value": 0.004975124378109453,
+          "ci95": [
+            0.5522557356230233,
+            0.6180572116001861
+          ]
+        }
+      }
+    },
+    "32": {
+      "probe": {
+        "fulldim": {
+          "accuracy_mean": 1.0,
+          "accuracy_std": 0.0,
+          "chance": 0.2,
+          "recall_by_condition": {
+            "sequence": 1.0,
+            "structure": 1.0,
+            "ss8": 1.0,
+            "sasa": 1.0,
+            "all": 1.0
+          }
+        },
+        "pca3d": {
+          "accuracy_mean": 0.836051282051282,
+          "accuracy_std": 0.02171045491758448,
+          "chance": 0.2,
+          "recall_by_condition": {
+            "sequence": 0.8241206030150754,
+            "structure": 0.914572864321608,
+            "ss8": 0.8391959798994975,
+            "sasa": 0.6984924623115578,
+            "all": 0.9045226130653267
+          }
+        }
+      },
+      "dimensionality": {
+        "overall_participation_ratio": 4.994698716269338,
+        "overall_effective_rank": 22.33979738291099,
+        "within_participation_ratio_mean": 10.82589174567185,
+        "within_effective_rank_mean": 34.65332729897646,
+        "by_condition": {
+          "sequence": {
+            "participation_ratio": 9.088554537797394,
+            "effective_rank": 34.90155512193467
+          },
+          "structure": {
+            "participation_ratio": 16.784712077276332,
+            "effective_rank": 44.986828874713346
+          },
+          "ss8": {
+            "participation_ratio": 6.2492693865168265,
+            "effective_rank": 26.004990116242094
+          },
+          "sasa": {
+            "participation_ratio": 5.420094438853164,
+            "effective_rank": 23.009643436094947
+          },
+          "all": {
+            "participation_ratio": 16.58682828791553,
+            "effective_rank": 44.36361894589721
+          }
+        }
+      },
+      "significance": {
+        "silhouette": {
+          "observed": 0.09505817179656734,
+          "null_mean": -0.01763079265895695,
+          "null_std": 0.0034543905216918806,
+          "p_value": 0.004975124378109453,
+          "ci95": [
+            0.08994503197808347,
+            0.10344794351614263
+          ]
+        },
+        "integration_index": {
+          "observed": 0.7423912033838416,
+          "null_mean": 0.0510354342805644,
+          "null_std": 0.002112281186650574,
+          "p_value": 0.004975124378109453,
+          "ci95": [
+            0.7027576097979138,
+            0.7955702449032165
+          ]
+        }
+      }
+    },
+    "40": {
+      "probe": {
+        "fulldim": {
+          "accuracy_mean": 1.0,
+          "accuracy_std": 0.0,
+          "chance": 0.2,
+          "recall_by_condition": {
+            "sequence": 1.0,
+            "structure": 1.0,
+            "ss8": 1.0,
+            "sasa": 1.0,
+            "all": 1.0
+          }
+        },
+        "pca3d": {
+          "accuracy_mean": 0.6593076923076923,
+          "accuracy_std": 0.041412487040024974,
+          "chance": 0.2,
+          "recall_by_condition": {
+            "sequence": 0.457286432160804,
+            "structure": 0.7236180904522613,
+            "ss8": 0.7587939698492462,
+            "sasa": 0.5125628140703518,
+            "all": 0.8442211055276382
+          }
+        }
+      },
+      "dimensionality": {
+        "overall_participation_ratio": 29.88528944429263,
+        "overall_effective_rank": 69.58920278232142,
+        "within_participation_ratio_mean": 25.92909184041772,
+        "within_effective_rank_mean": 58.28206383969761,
+        "by_condition": {
+          "sequence": {
+            "participation_ratio": 26.848288840187095,
+            "effective_rank": 60.18666996320168
+          },
+          "structure": {
+            "participation_ratio": 25.206716827485227,
+            "effective_rank": 56.60003317312512
+          },
+          "ss8": {
+            "participation_ratio": 25.44455250867771,
+            "effective_rank": 58.94900147989146
+          },
+          "sasa": {
+            "participation_ratio": 27.192452797165082,
+            "effective_rank": 60.250032770376386
+          },
+          "all": {
+            "participation_ratio": 24.953448228573485,
+            "effective_rank": 55.42458181189338
+          }
+        }
+      },
+      "significance": {
+        "silhouette": {
+          "observed": 0.053898724650204,
+          "null_mean": -0.011763410873726596,
+          "null_std": 0.0027388613088678453,
+          "p_value": 0.004975124378109453,
+          "ci95": [
+            0.05032597356957707,
+            0.06058729123381702
+          ]
+        },
+        "integration_index": {
+          "observed": 0.9614772945480874,
+          "null_mean": 0.13111725422189136,
+          "null_std": 0.002049558706133947,
+          "p_value": 0.004975124378109453,
+          "ci95": [
+            0.9446626535019846,
+            0.9762439570728146
+          ]
+        }
+      }
+    },
+    "47": {
+      "probe": {
+        "fulldim": {
+          "accuracy_mean": 1.0,
+          "accuracy_std": 0.0,
+          "chance": 0.2,
+          "recall_by_condition": {
+            "sequence": 1.0,
+            "structure": 1.0,
+            "ss8": 1.0,
+            "sasa": 1.0,
+            "all": 1.0
+          }
+        },
+        "pca3d": {
+          "accuracy_mean": 0.8227179487179488,
+          "accuracy_std": 0.0415970937891438,
+          "chance": 0.2,
+          "recall_by_condition": {
+            "sequence": 0.8793969849246231,
+            "structure": 0.8793969849246231,
+            "ss8": 0.7135678391959799,
+            "sasa": 0.7286432160804021,
+            "all": 0.914572864321608
+          }
+        }
+      },
+      "dimensionality": {
+        "overall_participation_ratio": 4.905835769954735,
+        "overall_effective_rank": 16.607992617704312,
+        "within_participation_ratio_mean": 5.2063584793610325,
+        "within_effective_rank_mean": 16.720888791337682,
+        "by_condition": {
+          "sequence": {
+            "participation_ratio": 5.255498027644974,
+            "effective_rank": 17.103992919894367
+          },
+          "structure": {
+            "participation_ratio": 7.261832737308864,
+            "effective_rank": 22.64590150894688
+          },
+          "ss8": {
+            "participation_ratio": 3.4883002375563104,
+            "effective_rank": 11.541000037854571
+          },
+          "sasa": {
+            "participation_ratio": 3.284168873904777,
+            "effective_rank": 10.711172047317822
+          },
+          "all": {
+            "participation_ratio": 6.741992520390236,
+            "effective_rank": 21.602377442674776
+          }
+        }
+      },
+      "significance": {
+        "silhouette": {
+          "observed": 0.05327795823070271,
+          "null_mean": -0.018106607504293513,
+          "null_std": 0.003788685286806579,
+          "p_value": 0.004975124378109453,
+          "ci95": [
+            0.04664744252274453,
+            0.06423354708509489
+          ]
+        },
+        "integration_index": {
+          "observed": 0.7998682005945599,
+          "null_mean": 0.02548190940189743,
+          "null_std": 0.002141833342462594,
+          "p_value": 0.004975124378109453,
+          "ci95": [
+            0.737141023748607,
+            0.8462328188631063
+          ]
+        }
+      }
+    }
+  }
+}

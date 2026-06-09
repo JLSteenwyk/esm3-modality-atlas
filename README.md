@@ -62,6 +62,7 @@ scripts/
   render_layer_sweep.py    layer-as-time GIF
   compute_metrics.py       silhouette, CKA, integration index
   render_cka_heatmap.py    per-pair CKA across depth (which modalities fuse first)
+  compute_diagnostics.py   probe / effective-dim / null-baseline diagnostics
 activations/                NPZ cache (gitignored)
 figures/                    GIF and PNG outputs
 results/                    JSON metric dumps
@@ -87,6 +88,17 @@ layer (L47). The per-pair heatmap (`figures/metrics/cka_pairs_vs_depth.png`)
 localizes *which* modalities fuse first: the structure family (structure, SS8,
 SASA) is mutually aligned from L0, while **sequence is the holdout** — every
 `sequence ↔ *` pair stays near CKA ≈ 0.2 through L24 and only joins the shared
-subspace at L32. Not a paper yet — this is the geometry-first atlas (Act 1 of a
+subspace at L32.
+
+Three diagnostics (`results/diagnostics.json`, `figures/metrics/diagnostics.png`)
+stress-test the fusion claim: (1) a protein-grouped logistic **probe** — in the
+top-3 PCA geometry, modality decodability collapses to 0.66 at L40 and recovers
+at L47 (tracking the GIF), while in full 1536-d it stays at 1.0 throughout, i.e.
+a thin additive "modality-tag" direction survives even peak fusion; (2)
+**effective rank** stays ≤ 70 of 1536 dimensions at every layer (never
+isotropic) and whole-cloud ≈ per-condition rank at the fused layers, so fusion
+is genuine collapse into a shared low-dimensional subspace, not noise; (3)
+label-permutation **nulls** and protein-bootstrap 95% CIs confirm every
+silhouette and integration-index value is significant (p ≈ 0.005). Not a paper yet — this is the geometry-first atlas (Act 1 of a
 larger program). Causal steering, SAE dictionaries, and cross-architecture
 comparison are deferred.
