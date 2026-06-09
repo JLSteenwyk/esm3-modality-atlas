@@ -38,7 +38,12 @@ are layers, watch modalities fuse).
 - **Embedding:** PCA → 3D per layer (UMAP as a comparison).
 - **Visualization:** matplotlib `FuncAnimation` + `PillowWriter`, with
   reveal-then-spin phasing lifted from
-  `LLM_MECH_INTERP/scripts/render_spinning_clusters.py`.
+  `LLM_MECH_INTERP/scripts/render_spinning_clusters.py`. Two hero modes:
+  per-layer **rotation** spins (`figures/gifs/spin_layer_*.gif`) and a
+  fixed-camera **depth-sweep** (`figures/gifs/depth_sweep.gif`) that morphs one
+  joint-PCA cloud from L0 to L47 so you watch the modalities fuse in place.
+  Conditions are coloured with the `pypubfigs` `nickel_five` (IBM colorblind-safe)
+  palette so all five stay distinct even when fused.
 
 ## Quantitative companions
 
@@ -63,6 +68,8 @@ scripts/
   compute_metrics.py       silhouette, CKA, integration index
   render_cka_heatmap.py    per-pair CKA across depth (which modalities fuse first)
   compute_diagnostics.py   probe / effective-dim / null-baseline diagnostics
+  render_depth_sweep.py    fixed-camera depth-sweep hero (watch modalities fuse)
+  render_lda_separability.py  LDA companion (identity stays decodable at depth)
 activations/                NPZ cache (gitignored)
 figures/                    GIF and PNG outputs
 results/                    JSON metric dumps
