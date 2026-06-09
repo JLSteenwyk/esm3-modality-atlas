@@ -41,9 +41,12 @@ are layers, watch modalities fuse).
   `LLM_MECH_INTERP/scripts/render_spinning_clusters.py`. Two hero modes:
   per-layer **rotation** spins (`figures/gifs/spin_layer_*.gif`) and a
   fixed-camera **depth-sweep** (`figures/gifs/depth_sweep.gif`) that morphs one
-  joint-PCA cloud from L0 to L47 so you watch the modalities fuse in place.
-  Conditions are coloured with the `pypubfigs` `nickel_five` (IBM colorblind-safe)
-  palette so all five stay distinct even when fused.
+  joint-PCA cloud from L0 to L47 so you watch the modalities fuse in place. The
+  depth-sweep is a share-ready dark-theme 16:9 composite — main morphing panel,
+  a per-layer silhouette "separation" meter, and two small spinning insets (L0
+  *distinct* vs L47 *fused*) for the at-a-glance contrast. Conditions are
+  coloured with the `pypubfigs` `nickel_five` (IBM colorblind-safe) palette so
+  all five stay distinct even when fused.
 
 ## Quantitative companions
 
