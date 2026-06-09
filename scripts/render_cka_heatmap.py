@@ -59,12 +59,16 @@ def _annotate(ax, data: np.ndarray) -> None:
 def render_pairs_vs_depth(layers, pair_keys, matrix, out_path: Path) -> None:
     """matrix: (n_pairs, n_layers) CKA, rows already in display order."""
     n_pairs, n_layers = matrix.shape
-    fig, ax = plt.subplots(figsize=(0.9 * n_layers + 4.2, 0.5 * n_pairs + 1.8),
+    dense = n_layers > 16   # 48-layer scaled run: drop per-cell text, saner width
+    width = min(0.32 * n_layers + 4.0, 18.0) if dense else 0.9 * n_layers + 4.2
+    fig, ax = plt.subplots(figsize=(width, 0.5 * n_pairs + 1.8),
                            dpi=130, facecolor="white")
     im = ax.imshow(matrix, cmap=CMAP, vmin=0.0, vmax=1.0, aspect="auto")
 
-    ax.set_xticks(range(n_layers))
-    ax.set_xticklabels([f"L{L}" for L in layers], fontsize=10, color=INK)
+    step = max(1, n_layers // 16)
+    xticks = list(range(0, n_layers, step))
+    ax.set_xticks(xticks)
+    ax.set_xticklabels([f"L{layers[i]}" for i in xticks], fontsize=10, color=INK)
     ax.set_yticks(range(n_pairs))
     ax.set_yticklabels([_pair_label(k) for k in pair_keys], fontsize=10, color=INK)
     ax.set_xlabel("Layer", fontsize=12, color=INK)
@@ -72,7 +76,8 @@ def render_pairs_vs_depth(layers, pair_keys, matrix, out_path: Path) -> None:
     for spine in ax.spines.values():
         spine.set_visible(False)
 
-    _annotate(ax, matrix)
+    if not dense:
+        _annotate(ax, matrix)
     cbar = fig.colorbar(im, ax=ax, fraction=0.025, pad=0.02)
     cbar.set_label("linear CKA", fontsize=10, color=INK)
 
@@ -116,6 +121,16 @@ def render_matrix_by_layer(layers, conditions, per_layer, out_path: Path) -> Non
 
 
 def main() -> None:
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--tag", default="",
+                    help="subdir under results/ and figures/ (e.g. 'scaled')")
+    args = ap.parse_args()
+    global RESULTS, OUT_FIG
+    if args.tag:
+        RESULTS = ROOT / "results" / args.tag / "metrics.json"
+        OUT_FIG = ROOT / "figures" / args.tag / "metrics"
+
     d = json.loads(RESULTS.read_text())
     layers = d["meta"]["layers"]
     per_layer = d["per_layer"]

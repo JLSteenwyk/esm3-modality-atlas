@@ -14,6 +14,7 @@ CONDITIONS: tuple[str, ...] = (
     "structure",
     "ss8",
     "sasa",
+    "function",
     "all",
 )
 
@@ -22,33 +23,38 @@ CONDITION_LABEL: dict[str, str] = {
     "structure": "Structure",
     "ss8":       "SS8",
     "sasa":      "SASA",
+    "function":  "Function",
     "all":       "All modalities",
 }
 
-# pypubfigs `nickel_five` — the IBM colorblind-safe 5-colour palette. Chosen so
-# all five conditions are maximally distinct (the previous green/lime/cyan trio
-# was indistinguishable once the clusters fuse). ss8 and sasa — the two derived
-# modalities that overlapped worst — get the most-separated hues (purple/amber).
+# pypubfigs `nickel_five` — the IBM colorblind-safe 5-colour palette — for the
+# original five conditions; the scaled atlas adds the function modality, coloured
+# with the Wong/ito green (#009E73, also a pypubfigs colour) so all six stay
+# distinct and colorblind-safe. ss8/sasa (the two derived modalities that
+# overlapped worst) keep the most-separated hues (purple/amber).
 CONDITION_COLOR: dict[str, str] = {
     "sequence":  "#648FFF",  # blue    — canonical amino acid sequence
     "structure": "#FE6100",  # orange  — 3D structure tokens
     "ss8":       "#785EF0",  # purple  — secondary structure
     "sasa":      "#FFB000",  # amber   — solvent accessibility
+    "function":  "#009E73",  # teal    — GO/InterPro function annotation
     "all":       "#DC267F",  # magenta — multimodal fusion
 }
 
 CATEGORY_GROUPS: list[tuple[str, list[str]]] = [
     ("INPUT MODALITY",   ["sequence", "structure"]),
     ("DERIVED MODALITY", ["ss8", "sasa"]),
+    ("FUNCTION",         ["function"]),
     ("FUSED",            ["all"]),
 ]
 
-# Neutral slate for all three headers: hue no longer encodes the taxonomy
-# (each condition has its own distinct colour), so the grouping is conveyed by
-# the legend layout alone rather than by header colour.
+# Neutral slate for all headers: hue no longer encodes the taxonomy (each
+# condition has its own distinct colour), so the grouping is conveyed by the
+# legend layout alone rather than by header colour.
 CATEGORY_COLOR: dict[str, str] = {
     "INPUT MODALITY":   "#475569",
     "DERIVED MODALITY": "#475569",
+    "FUNCTION":         "#475569",
     "FUSED":            "#475569",
 }
 

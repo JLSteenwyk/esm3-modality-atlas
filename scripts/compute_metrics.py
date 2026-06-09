@@ -212,6 +212,19 @@ def render_plot(layers: list[int], series: dict, out_path: Path) -> None:
 
 # --------------------------------------------------------------------------- #
 def main() -> None:
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--base", default="activations",
+                    help="activations base (reads <base>/by_layer)")
+    ap.add_argument("--tag", default="",
+                    help="output subdir under results/ and figures/ "
+                         "(e.g. 'scaled'); empty = repo root")
+    args = ap.parse_args()
+    global IN_DIR, OUT_RESULTS, OUT_FIG
+    IN_DIR = ROOT / args.base / "by_layer"
+    OUT_RESULTS = ROOT / "results" / args.tag if args.tag else ROOT / "results"
+    OUT_FIG = ROOT / "figures" / args.tag / "metrics" if args.tag else ROOT / "figures" / "metrics"
+
     index = json.loads((IN_DIR / "index.json").read_text())
     layers: list[int] = index["layers"]
     print(f"layers: {layers}")
