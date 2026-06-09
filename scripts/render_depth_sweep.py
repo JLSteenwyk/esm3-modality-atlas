@@ -97,11 +97,6 @@ def main() -> None:
                      allow_pickle=True)["condition"].astype(str)
     masks = {c: labels == c for c in CONDITIONS}
 
-    metrics = json.loads(METRICS.read_text())
-    sil = dict(zip(metrics["series"]["layers"], metrics["series"]["silhouette"]))
-    sil_arr = np.array([sil[L] for L in layers])
-    sil_lo, sil_hi = float(sil_arr.min()), float(sil_arr.max())
-
     main_lims = _limits(np.concatenate([coords[L] for L in layers]))
 
     # insets: best standalone per-layer PCA view of the two endpoints
@@ -125,31 +120,20 @@ def main() -> None:
              color=MUTED, family="DejaVu Sans")
 
     # main panel
-    ax = fig.add_axes([0.005, 0.16, 0.60, 0.66], projection="3d")
+    ax = fig.add_axes([0.005, 0.115, 0.60, 0.71], projection="3d")
     ax.set_facecolor(BG)
     strip_axes(ax, zoom=7.0)
     ax.set_xlim(*main_lims[0]); ax.set_ylim(*main_lims[1]); ax.set_zlim(*main_lims[2])
     main_sc = _scatters(ax, coords[layers[0]], labels, MAIN_SIZE)
 
-    layer_txt = fig.text(0.055, 0.79, "", ha="left", va="top", fontsize=19,
+    # single narration cluster, top-left: big layer number + one slim progress bar
+    layer_txt = fig.text(0.055, 0.80, "", ha="left", va="top", fontsize=23,
                          fontweight="bold", color=TEXT, family="DejaVu Sans")
-
-    # separation meter (under the main panel)
-    axm = fig.add_axes([0.055, 0.115, 0.40, 0.02]); axm.set_xlim(0, 1); axm.set_ylim(0, 1); axm.axis("off")
-    axm.add_patch(plt.Rectangle((0, 0.2), 1.0, 0.6, fc=FAINT, ec="none"))
-    meter_fill = axm.add_patch(plt.Rectangle((0, 0.2), 0.0, 0.6, fc=ACCENT, ec="none"))
-    axm.text(0.0, 1.9, "fused", ha="left", va="bottom", fontsize=8.5, color=MUTED)
-    axm.text(1.0, 1.9, "distinct", ha="right", va="bottom", fontsize=8.5, color=MUTED)
-    meter_txt = axm.text(0.5, -1.1, "", ha="center", va="top", fontsize=9, color=MUTED)
-
-    # depth track
-    axt = fig.add_axes([0.055, 0.07, 0.40, 0.015]); axt.set_xlim(0, 1); axt.set_ylim(0, 1); axt.axis("off")
-    axt.plot([0, 1], [0.5, 0.5], color=FAINT, lw=2, solid_capstyle="round")
-    for i, L in enumerate(layers):
-        xx = i / (len(layers) - 1)
-        axt.scatter(xx, 0.5, s=16, color=FAINT, edgecolors="none", zorder=2)
-        axt.text(xx, -1.2, f"L{L}", ha="center", va="top", fontsize=7.5, color=MUTED)
-    track_dot = axt.scatter([0], [0.5], s=60, color=ACCENT, edgecolors=BG, linewidths=1.2, zorder=3)
+    fig.text(0.057, 0.745, f"of {layers[-1]}", ha="left", va="top", fontsize=12,
+             color=MUTED, family="DejaVu Sans")
+    axp = fig.add_axes([0.057, 0.715, 0.15, 0.009]); axp.set_xlim(0, 1); axp.set_ylim(0, 1); axp.axis("off")
+    axp.add_patch(plt.Rectangle((0, 0), 1.0, 1.0, fc=FAINT, ec="none"))
+    prog_fill = axp.add_patch(plt.Rectangle((0, 0), 0.0, 1.0, fc=ACCENT, ec="none"))
 
     # ---- insets ----
     def make_inset(rect, coords_i, cond_i, lim_i):
@@ -169,16 +153,13 @@ def main() -> None:
     fig.text(0.802, 0.413, "fused into one", ha="center", va="top",
              fontsize=9.5, color="#DC267F", family="DejaVu Sans")
 
-    # legend (custom, light text) along the bottom-left
-    axl = fig.add_axes([0.035, 0.0, 0.58, 0.045]); axl.set_xlim(0, 1); axl.set_ylim(0, 1); axl.axis("off")
-    for j, c in enumerate(CONDITIONS):
-        x = 0.5 / len(CONDITIONS) + j / len(CONDITIONS)
-        axl.scatter(x - 0.045, 0.5, s=70, c=CONDITION_COLOR[c], edgecolors="none", clip_on=False)
-        axl.text(x - 0.022, 0.5, CONDITION_LABEL[c], ha="left", va="center",
-                 fontsize=9.5, color=TEXT, family="DejaVu Sans")
-
-    fig.text(0.965, 0.02, "esm3-sm-open-v1  ·  199 human proteins  ·  joint PCA(3)",
-             ha="right", va="bottom", fontsize=8, color=MUTED, family="DejaVu Sans")
+    # one clean legend, centred along the bottom (LLM-style restraint)
+    axl = fig.add_axes([0.0, 0.02, 1.0, 0.05]); axl.set_xlim(0, 1); axl.set_ylim(0, 1); axl.axis("off")
+    centers = np.linspace(0.16, 0.84, len(CONDITIONS))
+    for x, c in zip(centers, CONDITIONS):
+        axl.scatter(x - 0.052, 0.5, s=80, c=CONDITION_COLOR[c], edgecolors="none", clip_on=False)
+        axl.text(x - 0.036, 0.5, CONDITION_LABEL[c], ha="left", va="center",
+                 fontsize=10.5, color=TEXT, family="DejaVu Sans")
 
     def update(fi: int):
         s = sched[fi]
@@ -194,14 +175,10 @@ def main() -> None:
         ax_top.view_init(elev=18.0, azim=spin)
         ax_bot.view_init(elev=18.0, azim=spin)
 
-        s_now = float((1 - t) * sil_arr[lo_i] + t * sil_arr[hi_i])
-        meter_fill.set_width(max(0.0, min(1.0, (s_now - sil_lo) / (sil_hi - sil_lo + 1e-9))))
-        meter_txt.set_text(f"modality separation (silhouette) = {s_now:.2f}")
         nearest = layers[int(round(s))]
-        layer_txt.set_text(f"LAYER {nearest}\nof {layers[-1]}")
-        track_dot.set_offsets([[s / (len(layers) - 1), 0.5]])
-        arts = [a for a in main_sc.values() if a is not None]
-        return arts
+        layer_txt.set_text(f"LAYER {nearest}")
+        prog_fill.set_width(s / (len(layers) - 1))
+        return [a for a in main_sc.values() if a is not None]
 
     preview = os.environ.get("PREVIEW")
     if preview is not None:
