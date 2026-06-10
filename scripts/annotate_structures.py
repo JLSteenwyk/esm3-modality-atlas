@@ -24,7 +24,7 @@ import numpy as np
 from esm.utils.structure.protein_chain import ProteinChain
 
 ROOT = Path(__file__).resolve().parent.parent
-STRUCT_DIR = ROOT / "data" / "scaled" / "structures"
+STRUCT_DIR = ROOT / "data" / "scaled" / "structures"   # overridden by --dir
 OUT = ROOT / "data" / "scaled" / "annotations" / "structure_annotations.json"
 LOG = ROOT / "data" / "scaled" / "logs" / "annotate_summary.json"
 
@@ -39,28 +39,52 @@ def annotate_one(pdb_path: Path) -> dict:
     return {"ss8": ss8, "sasa": sasa, "length": len(seq)}
 
 
+def _worker(pdb_path: Path):
+    """Return (accession, result_dict_or_None, error_str_or_None)."""
+    try:
+        return pdb_path.stem, annotate_one(pdb_path), None
+    except Exception as e:  # noqa: BLE001
+        return pdb_path.stem, None, f"{type(e).__name__}: {e}"
+
+
 def main() -> None:
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--dir", default="data/scaled",
+                    help="dataset dir holding structures/; writes annotations/ + logs/")
+    ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--workers", type=int, default=8)
+    args = ap.parse_args()
+    global STRUCT_DIR, OUT, LOG
+    d = ROOT / args.dir
+    STRUCT_DIR = d / "structures"
+    OUT = d / "annotations" / "structure_annotations.json"
+    LOG = d / "logs" / "annotate_summary.json"
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     LOG.parent.mkdir(parents=True, exist_ok=True)
     pdbs = sorted(STRUCT_DIR.glob("*.pdb"))
-    limit = int(sys.argv[1]) if len(sys.argv) > 1 else len(pdbs)
+    limit = args.limit if args.limit else len(pdbs)
     pdbs = pdbs[:limit]
     print(f"annotating {len(pdbs)} structures")
 
+    import multiprocessing as mp
+
     out = json.loads(OUT.read_text()) if OUT.exists() else {}
+    todo = [p for p in pdbs if p.stem not in out]
     failed: list[dict] = []
     t0 = time.time()
-    for i, p in enumerate(pdbs, 1):
-        acc = p.stem
-        if acc in out:
-            continue
-        try:
-            out[acc] = annotate_one(p)
-        except Exception as e:  # noqa: BLE001
-            failed.append({"accession": acc, "error": f"{type(e).__name__}: {e}"})
-        if i % 50 == 0 or i == len(pdbs):
-            print(f"  {i}/{len(pdbs)}  ok={len(out)} failed={len(failed)} "
-                  f"({time.time() - t0:.0f}s)")
+    workers = args.workers
+    print(f"  {len(out)} already done; {len(todo)} to annotate on {workers} workers")
+    with mp.Pool(workers) as pool:
+        for i, (acc, res, err) in enumerate(pool.imap_unordered(_worker, todo, chunksize=4), 1):
+            if err is None:
+                out[acc] = res
+            else:
+                failed.append({"accession": acc, "error": err})
+            if i % 200 == 0 or i == len(todo):
+                print(f"  {i}/{len(todo)}  ok={len(out)} failed={len(failed)} "
+                      f"({time.time() - t0:.0f}s)")
 
     OUT.write_text(json.dumps(out))
     summary = {"n_structures": len(pdbs), "n_annotated": len(out),

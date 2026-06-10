@@ -11,3 +11,7 @@ data/scaled/
 
 # scaled embed intermediates (regenerable from gitignored activations)
 figures/scaled/embed/
+
+# diverse multi-organism dataset (regenerable)
+data/diverse/
+figures/diverse/embed/

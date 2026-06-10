@@ -161,7 +161,11 @@ def main() -> None:
     pr_cfg = cfg["pooling"]["per_residue"]
     do_per_residue = bool(pr_cfg.get("enabled")) and not args.random_init
 
-    out_base = "scaled_randinit" if args.random_init else "scaled"
+    # output base follows the dataset (data/scaled -> activations/scaled,
+    # data/diverse -> activations/diverse), with a _randinit suffix for the control
+    out_base = Path(ds["root"]).name
+    if args.random_init:
+        out_base += "_randinit"
     out_dir = ROOT / "activations" / out_base / "per_protein"
     pr_dir = ROOT / "activations" / out_base / "per_residue"
     out_dir.mkdir(parents=True, exist_ok=True)

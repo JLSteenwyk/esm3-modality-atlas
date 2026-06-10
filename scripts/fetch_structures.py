@@ -18,9 +18,10 @@ from pathlib import Path
 import requests
 
 ROOT = Path(__file__).resolve().parent.parent
-ACC_FILE = ROOT / "data" / "scaled" / "accessions.txt"
-OUT_DIR = ROOT / "data" / "scaled" / "structures"
-LOG_DIR = ROOT / "data" / "scaled" / "logs"
+DATA_DIR = ROOT / "data" / "scaled"   # overridden by --dir in main()
+ACC_FILE = DATA_DIR / "accessions.txt"
+OUT_DIR = DATA_DIR / "structures"
+LOG_DIR = DATA_DIR / "logs"
 
 API = "https://alphafold.ebi.ac.uk/api/prediction/{acc}"
 TIMEOUT = 30
@@ -58,10 +59,20 @@ def fetch_one(acc: str, session: requests.Session) -> tuple[str, str]:
 
 
 def main() -> None:
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--dir", default="data/scaled",
+                    help="dataset dir holding accessions.txt; writes structures/ + logs/")
+    ap.add_argument("--limit", type=int, default=None)
+    args = ap.parse_args()
+    global ACC_FILE, OUT_DIR, LOG_DIR
+    d = ROOT / args.dir
+    ACC_FILE, OUT_DIR, LOG_DIR = d / "accessions.txt", d / "structures", d / "logs"
+
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     accs = ACC_FILE.read_text().split()
-    limit = int(sys.argv[1]) if len(sys.argv) > 1 else len(accs)
+    limit = args.limit if args.limit else len(accs)
     accs = accs[:limit]
     print(f"fetching {len(accs)} accessions -> {OUT_DIR.relative_to(ROOT)}")
 
