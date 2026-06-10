@@ -8,3 +8,6 @@ __pycache__/
 
 # scaled dataset (fetched structures + derived annotations, regenerable)
 data/scaled/
+
+# scaled embed intermediates (regenerable from gitignored activations)
+figures/scaled/embed/

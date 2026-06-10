@@ -40,6 +40,18 @@ OUT_JOINT = ROOT / "figures" / "embed" / "joint"
 
 
 def main() -> None:
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--base", default="activations",
+                    help="activations base (reads <base>/by_layer)")
+    ap.add_argument("--tag", default="",
+                    help="output subdir under figures/ (e.g. 'scaled')")
+    args = ap.parse_args()
+    global IN_DIR, OUT_PER, OUT_JOINT
+    IN_DIR = ROOT / args.base / "by_layer"
+    emb = ROOT / "figures" / args.tag / "embed" if args.tag else ROOT / "figures" / "embed"
+    OUT_PER, OUT_JOINT = emb / "per_layer", emb / "joint"
+
     OUT_PER.mkdir(parents=True, exist_ok=True)
     OUT_JOINT.mkdir(parents=True, exist_ok=True)
 

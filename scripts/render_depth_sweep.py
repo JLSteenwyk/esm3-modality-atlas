@@ -61,6 +61,14 @@ def _smoothstep(p: float) -> float:
 
 
 def _build_schedule(n_layers: int) -> list[float]:
+    if n_layers > 12:
+        # many layers (e.g. the 48-layer scaled run): one continuous eased ramp
+        # through all of them rather than a dwell at each, ~4 frames per layer.
+        ramp = 200
+        s = [0.0] * HOLD_START
+        s += [_smoothstep(k / (ramp - 1)) * (n_layers - 1) for k in range(ramp)]
+        s += [float(n_layers - 1)] * HOLD_END
+        return s
     s = [0.0] * HOLD_START
     for i in range(n_layers - 1):
         s += [i + _smoothstep((f + 1) / MORPH) for f in range(MORPH)]
@@ -90,6 +98,21 @@ def _limits(coords, lo=1.5, hi=98.5, pad=0.08):
 
 
 def main() -> None:
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--scaled", action="store_true",
+                    help="render from the scaled 6-modality / 48-layer run")
+    args = ap.parse_args()
+    global JOINT_DIR, PER_DIR, OUT, SUBTITLE
+    SUBTITLE = ("ESM3's input modalities collapse into one shared subspace "
+                "with depth")
+    if args.scaled:
+        JOINT_DIR = ROOT / "figures" / "scaled" / "embed" / "joint"
+        PER_DIR = ROOT / "figures" / "scaled" / "embed" / "per_layer"
+        OUT = ROOT / "figures" / "scaled" / "gifs" / "depth_sweep.gif"
+        SUBTITLE = ("ESM3's four physical modalities fuse into one subspace "
+                    "— function stays separate  ·  892 proteins")
+
     layers = sorted(int(p.stem.split("_")[-1]) for p in JOINT_DIR.glob("layer_*.npz"))
     coords = {L: np.load(JOINT_DIR / f"layer_{L:02d}.npz", allow_pickle=True)["coords3d"]
               for L in layers}
@@ -115,8 +138,7 @@ def main() -> None:
 
     fig.text(0.035, 0.95, "Watch the modalities fuse", ha="left", va="top",
              fontsize=25, fontweight="bold", color=TEXT, family="DejaVu Sans")
-    fig.text(0.036, 0.895, "ESM3's input modalities collapse into one shared "
-             "subspace with depth", ha="left", va="top", fontsize=12.5,
+    fig.text(0.036, 0.895, SUBTITLE, ha="left", va="top", fontsize=12.5,
              color=MUTED, family="DejaVu Sans")
 
     # main panel
