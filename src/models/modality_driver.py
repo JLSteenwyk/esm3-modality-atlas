@@ -46,6 +46,7 @@ MODALITY_CONDITIONS: tuple[str, ...] = (
     "ss8",
     "sasa",
     "function",
+    "residue_annotation",
     "all",
 )
 
@@ -76,6 +77,7 @@ class ProteinInputs:
     ss8_tokens: Optional[torch.Tensor] = None
     sasa_tokens: Optional[torch.Tensor] = None
     function_tokens: Optional[torch.Tensor] = None
+    residue_annotation_tokens: Optional[torch.Tensor] = None
 
     def available_conditions(self) -> list[str]:
         out = ["sequence"]
@@ -87,6 +89,8 @@ class ProteinInputs:
             out.append("sasa")
         if self.function_tokens is not None:
             out.append("function")
+        if self.residue_annotation_tokens is not None:
+            out.append("residue_annotation")
         # "all" requires sequence (always present) and at least one other modality
         if len(out) > 1:
             out.append("all")
@@ -103,6 +107,7 @@ def tokenize_protein(
     secondary_structure: Optional[str] = None,
     sasa: Optional[Sequence[Optional[float]]] = None,
     function_annotations: Optional[Sequence[FunctionAnnotation]] = None,
+    residue_annotation_sample: Optional[dict] = None,
     device: str = "cuda",
 ) -> ProteinInputs:
     """Tokenize as many modalities as we have data for.
@@ -167,6 +172,17 @@ def tokenize_protein(
         )
         inputs.function_tokens = func_tok.to(device).unsqueeze(0)
 
+    if residue_annotation_sample is not None:
+        ra_tok_str = tokenizers.residue_annotations.tokenize(
+            residue_annotation_sample, sequence)
+        ra_tok = tokenizers.residue_annotations.encode(
+            ra_tok_str, add_special_tokens=True)  # (L+2, max_annotations)
+        # keep only if it carries real annotations: any <unk> (2) or <ra:..> (>=4)
+        # token, i.e. not all <pad>(0)/<none>(3).
+        annotated = ((ra_tok == 2) | (ra_tok >= 4)).sum().item()
+        if annotated > 0:
+            inputs.residue_annotation_tokens = ra_tok.to(device).unsqueeze(0)
+
     return inputs
 
 
@@ -194,6 +210,10 @@ def _build_forward_kwargs(inputs: ProteinInputs, condition: str) -> dict:
         if inputs.function_tokens is None:
             raise ValueError(f"{inputs.sequence_id}: no function tokens")
         return {"function_tokens": inputs.function_tokens}
+    if condition == "residue_annotation":
+        if inputs.residue_annotation_tokens is None:
+            raise ValueError(f"{inputs.sequence_id}: no residue_annotation tokens")
+        return {"residue_annotation_tokens": inputs.residue_annotation_tokens}
     if condition == "all":
         kw = {"sequence_tokens": inputs.sequence_tokens}
         if inputs.structure_tokens is not None:
