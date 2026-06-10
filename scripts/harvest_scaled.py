@@ -47,6 +47,42 @@ def _coords_from_pdb(pdb_path: Path) -> torch.Tensor:
     return atom37[:, :3, :]  # (L, 3, 3) backbone N, CA, C
 
 
+@torch.no_grad()
+def randomize_trunk(model) -> tuple[int, int]:
+    """Reinitialise every weight EXCEPT the structure VQ encoder.
+
+    The random-init control: inputs stay meaningful (trained tokenizers +
+    structure encoder still produce the same token streams), but the modality
+    embeddings, transformer trunk and heads are untrained. If the trained model
+    fuses modalities and this one doesn't, fusion is a learned property rather
+    than an artifact of the architecture summing modality embeddings.
+    """
+    import torch.nn as nn
+
+    se_param_ids = {id(p) for p in model._structure_encoder.parameters()}
+    n_reset = 0
+    for name, m in model.named_modules():
+        if name == "_structure_encoder" or name.startswith("_structure_encoder."):
+            continue
+        own = list(m.parameters(recurse=False))
+        if not own or any(id(p) in se_param_ids for p in own):
+            continue
+        if hasattr(m, "reset_parameters"):
+            m.reset_parameters()
+            n_reset += 1
+    # param-bearing modules without reset_parameters (e.g. geometric attention)
+    n_manual = 0
+    for name, m in model.named_modules():
+        if name.startswith("_structure_encoder") or hasattr(m, "reset_parameters"):
+            continue
+        for p in m.parameters(recurse=False):
+            if id(p) in se_param_ids:
+                continue
+            nn.init.normal_(p, 0.0, 0.02) if p.dim() >= 2 else p.zero_()
+            n_manual += 1
+    return n_reset, n_manual
+
+
 def harvest_protein(protein, model, tokenizers, structure_encoder, device,
                     conditions, layers, pr_cfg, want_per_residue, known_ipr):
     coords = _coords_from_pdb(protein.pdb_path)
@@ -113,6 +149,9 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--config", default="config/harvest.json")
     ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--random-init", action="store_true",
+                    help="randomize the trunk (control); writes to "
+                         "activations/scaled_randinit, no per-residue")
     args = ap.parse_args()
 
     cfg = json.loads((ROOT / args.config).read_text())
@@ -120,10 +159,11 @@ def main() -> None:
     conditions = list(cfg["conditions"])
     layers = list(cfg["layers"])
     pr_cfg = cfg["pooling"]["per_residue"]
-    do_per_residue = bool(pr_cfg.get("enabled"))
+    do_per_residue = bool(pr_cfg.get("enabled")) and not args.random_init
 
-    out_dir = ROOT / "activations" / "scaled" / "per_protein"
-    pr_dir = ROOT / "activations" / "scaled" / "per_residue"
+    out_base = "scaled_randinit" if args.random_init else "scaled"
+    out_dir = ROOT / "activations" / out_base / "per_protein"
+    pr_dir = ROOT / "activations" / out_base / "per_residue"
     out_dir.mkdir(parents=True, exist_ok=True)
     if do_per_residue:
         pr_dir.mkdir(parents=True, exist_ok=True)
@@ -139,6 +179,11 @@ def main() -> None:
 
     model, tokenizers = load_esm3(device=device)
     structure_encoder = model.get_structure_encoder()
+    if args.random_init:
+        n_reset, n_manual = randomize_trunk(model)
+        model.eval()
+        print(f"RANDOM-INIT control: reinitialised {n_reset} modules + "
+              f"{n_manual} extra params (structure encoder preserved)")
 
     # Filter to proteins that support the function modality (>=1 InterPro ID in
     # ESM3's vocab) so every harvested protein supports all conditions uniformly.
@@ -182,7 +227,7 @@ def main() -> None:
         "errors": errors,
         "elapsed_sec": time.time() - t0,
     }
-    (ROOT / "activations" / "scaled" / "manifest.json").write_text(json.dumps(manifest, indent=2))
+    (ROOT / "activations" / out_base / "manifest.json").write_text(json.dumps(manifest, indent=2))
     print(f"\ndone: {done}/{len(proteins)}  errors: {len(errors)}  "
           f"({time.time() - t0:.0f}s)")
     if errors:
