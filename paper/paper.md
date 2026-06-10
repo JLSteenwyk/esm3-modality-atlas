@@ -131,11 +131,14 @@ tag" persists), while the top-3 PCA probe dips to ≈ 0.68 in the fusion zone �
 by SASA (recall ≈ 0.33) — even as `function` recall stays ≈ 1.0.
 *(`figures/scaled/metrics/diagnostics.png`.)*
 
-### R7 — Fusion depth depends on disorder, not length
+### R7 — Fusion depth depends on secondary-structure content, not length or prediction confidence
 Across 892 proteins, fusion-onset is independent of length (Spearman r = −0.04,
 p = 0.26) but is delayed by structural disorder (coil fraction r = +0.22,
-p = 3×10⁻¹¹; helix fraction r = −0.20, p = 3×10⁻⁹): well-folded proteins fuse
-earlier. *(`figures/scaled/metrics/biology_breakdown.png`.)*
+p = 3×10⁻¹¹; helix fraction r = −0.20, p = 3×10⁻⁹): well-folded, helical proteins
+fuse earlier. Crucially, fusion-onset has **no relationship with AlphaFold
+confidence** (mean pLDDT r = +0.003, p = 0.93), so the disorder effect reflects
+genuine secondary-structure *content*, not the model's structural *uncertainty*.
+*(`figures/scaled/metrics/biology_breakdown.png`.)*
 
 ### R8 — Fusion is universal across the tree of life
 *[Pending the diverse run: 5,984 proteins × 12 organisms × 3 superkingdoms. The
@@ -157,8 +160,10 @@ functional labels on a separate axis.
 - **Model scale.** Only one model — `esm3-sm-open-v1` is the sole openly available
   *multimodal* ESM3; larger ESM3 is API-gated and ESM2 is sequence-only — so we
   cannot test whether (fractional) fusion depth scales with capacity.
-- **Structures** are AlphaFold predictions; the disorder effect (R7) partly tracks
-  prediction confidence.
+- **Structures** are AlphaFold predictions. (The disorder effect in R7 is *not* an
+  artifact of prediction confidence — fusion depth is uncorrelated with pLDDT — but
+  an experimental-structure replication would still strengthen the structure-derived
+  conditions.)
 - **Descriptive, not causal.** We characterise the geometry; we do not intervene.
 
 ## 6. Reproducibility

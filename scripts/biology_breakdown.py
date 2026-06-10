@@ -46,12 +46,30 @@ OUT_FIG = ROOT / "figures" / "scaled" / "metrics" / "biology_breakdown.png"
 PHYSICAL = ["sequence", "structure", "ss8", "sasa"]
 
 
+STRUCT_DIR = ROOT / "data" / "scaled" / "structures"
+
+
 def ss_fracs(ss: str) -> tuple[float, float, float]:
     n = max(1, len(ss))
     helix = sum(ss.count(c) for c in "HGI") / n
     strand = sum(ss.count(c) for c in "EB") / n
     coil = sum(ss.count(c) for c in "CTSP") / n
     return helix, strand, coil
+
+
+def mean_plddt(acc: str) -> float:
+    """Mean per-residue AlphaFold confidence (pLDDT) from the CA B-factor column."""
+    p = STRUCT_DIR / f"{acc}.pdb"
+    if not p.exists():
+        return float("nan")
+    vals = []
+    for line in p.read_text().splitlines():
+        if line.startswith("ATOM") and line[12:16].strip() == "CA":
+            try:
+                vals.append(float(line[60:66]))
+            except ValueError:
+                pass
+    return float(np.mean(vals)) if vals else float("nan")
 
 
 def main() -> None:
@@ -97,13 +115,17 @@ def main() -> None:
     length = np.array([meta[a]["length"] for a in accs], dtype=float)
     cats = [meta[a]["category"] for a in accs]
     helix, strand, coil = np.array([ss_fracs(anno[a]["ss8"]) for a in accs]).T
+    plddt = np.array([mean_plddt(a) for a in accs])  # AFDB structure confidence
 
     def corr(x, name):
-        r, p = spearmanr(onset, x)
-        return {"vs": name, "spearman_r": float(r), "p_value": float(p)}
+        ok = np.isfinite(x)
+        r, p = spearmanr(onset[ok], x[ok])
+        return {"vs": name, "spearman_r": float(r), "p_value": float(p),
+                "n": int(ok.sum())}
 
     correlations = [corr(length, "length"), corr(coil, "coil_fraction"),
-                    corr(helix, "helix_fraction"), corr(strand, "strand_fraction")]
+                    corr(helix, "helix_fraction"), corr(strand, "strand_fraction"),
+                    corr(plddt, "mean_plddt")]
     print("\nfusion-onset Spearman correlations:")
     for c in correlations:
         print(f"  vs {c['vs']:<16} r={c['spearman_r']:+.3f}  p={c['p_value']:.1e}")
@@ -153,13 +175,14 @@ def main() -> None:
     axB.set_xlabel("length (residues)"); axB.set_ylabel("fusion-onset layer")
     axB.grid(True, alpha=0.25)
 
-    # C: onset vs coil (disorder proxy)
+    # C: onset vs pLDDT (structure confidence) — coil & helix correlations are in the JSON
     axC = axes[1, 0]
-    rC = correlations[1]["spearman_r"]
-    axC.scatter(coil, onset, s=10, alpha=0.4, color="#DC267F", edgecolors="none")
-    axC.set_title(f"Fusion onset vs disorder (coil fraction)  (r={rC:+.2f})",
+    rP = correlations[4]["spearman_r"]
+    okp = np.isfinite(plddt)
+    axC.scatter(plddt[okp], onset[okp], s=10, alpha=0.4, color="#DC267F", edgecolors="none")
+    axC.set_title(f"Fusion onset vs structure confidence (pLDDT)  (r={rP:+.2f})",
                   fontsize=12, fontweight="bold", color=INK)
-    axC.set_xlabel("coil / loop fraction (SS8)"); axC.set_ylabel("fusion-onset layer")
+    axC.set_xlabel("mean pLDDT (AlphaFold confidence)"); axC.set_ylabel("fusion-onset layer")
     axC.grid(True, alpha=0.25)
 
     # D: onset by category (sorted)
