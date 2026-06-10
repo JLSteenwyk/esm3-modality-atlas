@@ -237,6 +237,7 @@ def render_plot(layers, diag, out_path):
     x = np.array(layers)
     fig, (axA, axB, axC) = plt.subplots(1, 3, figsize=(16.5, 4.6),
                                         dpi=130, facecolor="white")
+    xt = x if len(x) <= 12 else x[:: max(1, len(x) // 12)]  # sparse ticks at scale
 
     # --- A. probe ---
     full = np.array([diag[str(L)]["probe"]["fulldim"]["accuracy_mean"] for L in layers])
@@ -257,7 +258,7 @@ def render_plot(layers, diag, out_path):
     axA.text(x[-1], chance + 0.02, "chance", ha="right", fontsize=8,
              color="#94a3b8")
     axA.set_ylim(0, 1.03)
-    axA.set_xticks(x)
+    axA.set_xticks(xt)
     axA.set_xlabel("Layer", color=INK)
     axA.set_ylabel("modality-identity decodability", color=INK)
     axA.set_title("1 · Probe: can we still tell modalities apart?",
@@ -272,35 +273,34 @@ def render_plot(layers, diag, out_path):
     axB.plot(x, wi, "--s", color="#94a3b8", lw=2.0,
              label="per-condition (mean)")
     axB.fill_between(x, wi, ov, color=CONDITION_COLOR["sequence"], alpha=0.10)
-    axB.set_xticks(x)
+    axB.set_xticks(xt)
     axB.set_xlabel("Layer", color=INK)
     axB.set_ylabel("effective rank (dimensions)", color=INK)
     axB.set_title("2 · Dimensionality: shared subspace, not isotropy?",
                   fontsize=11, fontweight="bold", color=INK)
-    axB.annotate("isotropic would be ≈1536 — peak is ~70,\n"
-                 "so fusion is collapse into a low-d subspace",
-                 xy=(0.50, 0.82), xycoords="axes fraction", ha="center",
+    axB.annotate(f"isotropic would be ≈1536 — peak is only ~{int(max(ov))},\n"
+                 "so the stream stays in a low-d subspace throughout",
+                 xy=(0.46, 0.52), xycoords="axes fraction", ha="center",
                  va="center", fontsize=8, color="#64748b", style="italic")
     axB.legend(fontsize=8.5, loc="upper left", framealpha=0.9)
     axB.grid(True, alpha=0.25)
 
-    # --- C. significance ---
-    def series(metric, key):
-        return np.array([diag[str(L)]["significance"][metric][key] for L in layers])
-
+    # --- C. significance (only on layers where it was computed) ---
+    sig_L = [L for L in layers if diag[str(L)]["significance"] is not None]
+    xs = np.array(sig_L)
     for metric, color, lab in [
         ("silhouette", CONDITION_COLOR["sequence"], "silhouette"),
         ("integration_index", INK, "integration index"),
     ]:
-        obs = series(metric, "observed")
-        lo = np.array([diag[str(L)]["significance"][metric]["ci95"][0] for L in layers])
-        hi = np.array([diag[str(L)]["significance"][metric]["ci95"][1] for L in layers])
-        nm = series(metric, "null_mean")
-        axC.fill_between(x, lo, hi, color=color, alpha=0.18)
-        axC.plot(x, obs, "-o", color=color, lw=2.2, label=f"{lab} (95% CI)")
-        axC.plot(x, nm, ":", color=color, lw=1.4, alpha=0.8,
-                 label=f"{lab} null")
-    axC.set_xticks(x)
+        def col(key):
+            return np.array([diag[str(L)]["significance"][metric][key] for L in sig_L])
+        obs, nm = col("observed"), col("null_mean")
+        lo = np.array([diag[str(L)]["significance"][metric]["ci95"][0] for L in sig_L])
+        hi = np.array([diag[str(L)]["significance"][metric]["ci95"][1] for L in sig_L])
+        axC.fill_between(xs, lo, hi, color=color, alpha=0.18)
+        axC.plot(xs, obs, "-o", color=color, lw=2.2, label=f"{lab} (95% CI)")
+        axC.plot(xs, nm, ":", color=color, lw=1.4, alpha=0.8, label=f"{lab} null")
+    axC.set_xticks(xt)
     axC.set_ylim(-0.05, 1.03)
     axC.set_xlabel("Layer", color=INK)
     axC.set_ylabel("score", color=INK)
@@ -320,8 +320,32 @@ def render_plot(layers, diag, out_path):
 
 # --------------------------------------------------------------------------- #
 def main() -> None:
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--base", default="activations",
+                    help="activations base (reads <base>/by_layer)")
+    ap.add_argument("--tag", default="",
+                    help="subdir under results/ and figures/ (e.g. 'scaled')")
+    ap.add_argument("--sig-layers", default="",
+                    help="comma list of layers to run the (slow) significance "
+                         "block on; '' = all, 'none' = skip")
+    args = ap.parse_args()
+    global IN_DIR, EMBED_DIR, METRICS, OUT_RESULTS, OUT_FIG
+    IN_DIR = ROOT / args.base / "by_layer"
+    fig_root = ROOT / "figures" / args.tag if args.tag else ROOT / "figures"
+    EMBED_DIR = fig_root / "embed" / "per_layer"
+    OUT_RESULTS = ROOT / "results" / args.tag if args.tag else ROOT / "results"
+    OUT_FIG = fig_root / "metrics"
+    METRICS = OUT_RESULTS / "metrics.json"
+
     index = json.loads((IN_DIR / "index.json").read_text())
     layers = index["layers"]
+    if args.sig_layers == "none":
+        sig_layers = set()
+    elif args.sig_layers:
+        sig_layers = {int(x) for x in args.sig_layers.split(",")}
+    else:
+        sig_layers = set(layers)
     metrics = json.loads(METRICS.read_text())
     obs_sil = dict(zip(layers, metrics["series"]["silhouette"]))
     obs_cka = dict(zip(layers, metrics["series"]["integration_index"]))
@@ -357,17 +381,19 @@ def main() -> None:
         dim = dimensionality_layer(coords, condition, present)
         if str(L) in cached_sig:
             sig = cached_sig[str(L)]
-        else:
+        elif L in sig_layers:
             sig = significance_layer(coords, condition, protein_id, present,
                                      obs_sil[L], obs_cka[L], rng)
+        else:
+            sig = None
         diag[str(L)] = {"probe": probe, "dimensionality": dim, "significance": sig}
 
+        sp = f"{sig['silhouette']['p_value']:.3f}" if sig else "  -  "
+        cp = f"{sig['integration_index']['p_value']:.3f}" if sig else "  -  "
         print(f"{L:>5}  {probe['fulldim']['accuracy_mean']:>8.3f}  "
               f"{probe['pca3d']['accuracy_mean']:>7.3f}  "
               f"{dim['overall_effective_rank']:>9.1f} /"
-              f"{dim['within_effective_rank_mean']:>9.1f}  "
-              f"{sig['silhouette']['p_value']:>6.3f}  "
-              f"{sig['integration_index']['p_value']:>6.3f}")
+              f"{dim['within_effective_rank_mean']:>9.1f}  {sp:>6}  {cp:>6}")
 
     out = {
         "meta": {
