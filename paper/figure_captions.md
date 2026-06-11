@@ -52,3 +52,40 @@ than prediction uncertainty. (b) Condition separation across depth for 5,555 pro
 from 12 organisms, stratified by superkingdom. The eukaryota, bacteria, and archaea
 curves are nearly superimposable and reach minimum separation at layer 35 (shaded);
 every one of the 12 organisms reaches its minimum at layer 35 (standard deviation of 0).
+
+---
+
+# Supplementary figure captions
+
+**Figure S1. The metrics are converged at the sample size used.** Silhouette and
+integration index computed on random subsamples of the 892-protein set (mean and
+standard deviation over 12 draws per size) at layer 24 (separation peak) and
+layer 40 (fusion zone). Silhouette is stable from 100 proteins, and the integration
+index settles by 400 to 600 proteins, so 892 proteins lie within the converged
+regime for every reported quantity.
+
+**Figure S2. Every fusion metric is significant against a permutation null.** For
+the canonical layers, the observed silhouette and integration index (points, with
+protein-bootstrap 95 percent confidence bands) sit far above their label-permutation
+null means (dotted), with permutation p of 0.005 at every layer tested.
+
+**Figure S3. Modality identity stays decodable, and the functional channel stays
+decodable longest.** A protein-grouped logistic probe of modality identity. In the
+full 1536-dimensional stream, decodability is 1.0 at every layer (an additive
+modality tag persists). In the top-3 PCA geometry, overall accuracy falls to about
+0.68 in the fusion zone, driven by SASA (per-condition recall near 0.33), whereas the
+function condition stays near 1.0 throughout. Chance is 1 of 6.
+
+**Figure S4. Every individual organism reaches peak fusion at the same depth.**
+Condition separation across depth for each of the 12 organisms (thin lines, coloured
+by superkingdom) and for the pooled set (thick line). All 12 organism curves and the
+pooled curve reach minimum separation at layer 35 (dotted line).
+
+**Figure S5. The condition-by-condition CKA matrix warms with depth except along the
+function axis.** Linear CKA between all six conditions at seven depths. The structure,
+SS8, and SASA block is warm from layer 0, the sequence entries warm after layer 24,
+and the function row and column stay near CKA 0 at every depth.
+
+**Figure S6. Composition of the 12-organism diverse set.** (a) Proteins curated per
+organism (about 500 each), coloured by superkingdom. (b) Protein-length distributions
+by superkingdom over the 50 to 800 residue range.
