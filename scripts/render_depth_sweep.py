@@ -48,10 +48,10 @@ MUTED = "#8C9AB4"
 FAINT = "#2A3349"
 ACCENT = "#7AA2FF"
 
-HOLD_START = 14
-MORPH = 18
-HOLD = 10
-HOLD_END = 40
+HOLD_START = 20
+MORPH = 26       # frames morphing between adjacent featured layers (eased)
+HOLD = 22        # frames dwelling on each featured layer
+HOLD_END = 48
 MAIN_SIZE = 15
 INSET_SIZE = 11
 
@@ -104,6 +104,9 @@ def main() -> None:
                     help="render from the scaled 6-modality / 48-layer run")
     ap.add_argument("--tag", default="",
                     help="dataset tag under figures/ (e.g. 'scaled', 'diverse')")
+    ap.add_argument("--layers", default="",
+                    help="comma list of layers to feature (dwell at each); "
+                         "fewer layers = slower, more legible sweep")
     args = ap.parse_args()
     global JOINT_DIR, PER_DIR, OUT, SUBTITLE
     SUBTITLE = ("ESM3's input modalities collapse into one shared subspace "
@@ -122,6 +125,9 @@ def main() -> None:
         SUBTITLE = SUBTITLES.get(tag, SUBTITLE)
 
     layers = sorted(int(p.stem.split("_")[-1]) for p in JOINT_DIR.glob("layer_*.npz"))
+    if args.layers:
+        want = {int(x) for x in args.layers.split(",")}
+        layers = [L for L in layers if L in want]
     coords = {L: np.load(JOINT_DIR / f"layer_{L:02d}.npz", allow_pickle=True)["coords3d"]
               for L in layers}
     labels = np.load(JOINT_DIR / f"layer_{layers[0]:02d}.npz",
