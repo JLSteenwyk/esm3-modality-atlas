@@ -1,7 +1,7 @@
-"""Assemble the supplementary figure suite (figureS1..S8).
+"""Assemble the supplementary figure suite (figureS1..S9).
 
 Re-plots robustness and breakdown analyses that support, but do not lead, the main
-figures. Output: paper/figures/figureS{1..8}.png at 300 dpi; captions in
+figures. Output: paper/figures/figureS{1..9}.png at 300 dpi; captions in
 paper/figure_captions.md.
 """
 
@@ -324,6 +324,48 @@ def figS8():
     plt.close(fig); print("wrote figureS8.png")
 
 
+def figS9():
+    """Information vs geometry: function content lives in the physical subspace."""
+    d = jload("scaled/subspace_decode.json")
+    res, L = d["results"], d["layers"]
+    ml = d["matrix_layer"]; mi = L.index(ml)
+    struc_c, func_c = CONDITION_COLOR["structure"], CONDITION_COLOR["function"]
+    fig, (axA, axB) = plt.subplots(1, 2, figsize=(8.2, 3.5))
+
+    x = np.arange(len(CONDITIONS)); w = 0.38
+    axA.bar(x - w / 2, [res["fold"][c][mi] for c in CONDITIONS], w,
+            color=struc_c, label="fold class (structure target)")
+    axA.bar(x + w / 2, [res["ec"][c][mi] for c in CONDITIONS], w,
+            color=func_c, label="enzyme class (function target)")
+    axA.axhline(d["chance"], ls=":", color="0.5", lw=1)
+    axA.set_xticks(x)
+    axA.set_xticklabels([CONDITION_LABEL[c].replace("All modalities", "All")
+                         for c in CONDITIONS], rotation=35, ha="right", fontsize=7)
+    axA.set_ylabel("balanced accuracy")
+    axA.set_title(f"what each channel encodes (layer {ml})")
+    below(axA, ncol=1, y=-0.42)
+    panel(axA, "a")
+
+    xa = np.array(L)
+    axB.plot(xa, res["ec"]["structure"], "-", color=func_c, lw=2,
+             label="enzyme class from structure")
+    axB.plot(xa, res["ec"]["function"], "--", color=func_c, lw=1.6,
+             label="enzyme class from function channel")
+    axB.plot(xa, res["fold"]["structure"], "-", color=struc_c, lw=2,
+             label="fold class from structure")
+    axB.plot(xa, res["fold"]["function"], "--", color=struc_c, lw=1.6,
+             label="fold class from function channel")
+    axB.axhline(d["chance"], ls=":", color="0.5", lw=1)
+    axB.set_xlabel("layer"); axB.set_ylabel("balanced accuracy")
+    axB.set_xticks(range(0, 48, 8))
+    axB.set_title("function content lives in the physical subspace")
+    below(axB, ncol=1, y=-0.42)
+    panel(axB, "b")
+    fig.tight_layout(rect=(0, 0.06, 1, 1))
+    fig.savefig(OUT / "figureS9.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS9.png")
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
-    figS1(); figS2(); figS3(); figS4(); figS5(); figS6(); figS7(); figS8()
+    figS1(); figS2(); figS3(); figS4(); figS5(); figS6(); figS7(); figS8(); figS9()

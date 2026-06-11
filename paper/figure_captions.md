@@ -110,3 +110,17 @@ the redundant group (medians near 0, Mann-Whitney p = 0.35). (b) Alignment again
 InterPro domain count shows no trend (Spearman r = -0.02). Alignment is near zero for
 every protein regardless of redundancy, which favours a categorical account of the
 functional channel over a redundancy account.
+
+**Figure S9. Function content lives in the physical subspace even though the function
+channel is geometrically orthogonal.** A probe (standardisation, 50-component PCA,
+logistic regression, five-fold balanced accuracy) decodes a structural target (fold
+class from SS8, three classes) and a functional target (EC enzyme class, three classes)
+from each modality condition. (a) At the post-fusion layer 39 the physical conditions
+decode both targets well, whereas the function channel decodes both weakly, so there is
+no division of representational labour. (b) Across depth, enzyme class becomes more
+decodable from the structure-derived representation, reaching about 0.79, while the
+function channel decodes fold class near 0.40 and enzyme class near 0.55. Functional
+information is therefore present in the physical subspace, and the geometric
+orthogonality of the function channel reflects how the network organises the
+representation rather than an absence of functional content. The dotted line marks the
+chance rate of 0.33.

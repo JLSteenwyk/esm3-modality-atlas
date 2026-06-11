@@ -267,8 +267,19 @@ resolved, while holding discrete functional labels on a separate axis. The
 depth-locked universality across the tree of life indicates that this organisation is
 intrinsic to the trained model rather than a property of any particular proteome.
 
-One mechanism that could keep functional annotation orthogonal is redundancy. Enzyme
-class is decodable from the structure-derived representation, so the network may
+Geometric orthogonality does not mean that functional content is absent from the
+fused representation. A linear probe recovers enzyme class from the structure-derived
+representation with a balanced accuracy that rises from 0.56 to about 0.79 by layer
+39, and it recovers fold class from the physical conditions at about 0.84 throughout
+(Figure S9). The explicit function channel behaves in the opposite way, decoding fold
+class only near 0.40 and enzyme class near 0.55, with the latter declining across
+depth. The network therefore extracts functional content into the physical subspace
+while holding the discrete function channel on a separate and informationally thin
+axis, so the orthogonality is a representational choice rather than an absence of
+functional information.
+
+One mechanism that could keep functional annotation orthogonal is redundancy. Because
+enzyme class is decodable from the structure-derived representation, the network may
 already recover function from the physical modalities and face little pressure to
 integrate the explicit functional channel. This account predicts that the function
 channel should align more closely with the physical subspace for proteins whose
