@@ -1,200 +1,209 @@
 # When does ESM3 fuse its modalities? A geometry-first atlas of the multimodal residual stream
 
-*Working draft. Figures referenced by their committed paths under `figures/`.*
+*Markdown companion to `manuscript.tex` (the LaTeX manuscript is canonical). Figures in `paper/figures/`.*
 
 ## Abstract
 
-ESM3 ingests a protein through several distinct channels at once — amino-acid
-sequence, 3D structure, secondary structure (SS8), solvent accessibility (SASA),
-and discrete functional annotations — summing their embeddings into a single
-residual stream. We ask a geometry-first question: do these modalities occupy
-separate subspaces, and if so, when along the network's depth do they fuse? Using
-single-modality forward passes and representational-similarity analysis across all
-48 layers of `esm3-sm-open-v1`, we find that the four *physical* modalities
-(sequence, structure, SS8, SASA) begin in distinct subspaces, remain maximally
-separated through roughly the first half of the network, and then **fuse sharply
-into a shared low-dimensional subspace** between layers ~25 and ~35. The fusion is
-ordered — the structure-derived modalities (structure, SS8, SASA) are mutually
-aligned from the input, while sequence is the last to join (~L28–33). Strikingly,
-the **functional-annotation modality never fuses**: it remains representationally
-orthogonal to the physical modalities at every layer, and this holds whether the
-annotation is provided whole-protein or per-residue, identifying it as a
-content-driven separation rather than a tokenisation artifact. We show the fusion
-is a *learned* property (absent in a random-initialised model of the same
-architecture), holds below the mean-pool (at the residue level), is statistically
-robust at our sample size, and is a representational *re-organisation* — between-
-condition variance is converted into within-condition variance while the stream
-never approaches isotropy. Fusion depth is independent of protein length but is
-delayed by structural disorder. Finally, the entire phenomenon is **universal
-across the tree of life**: on 5,555 proteins from 12 organisms spanning eukaryota,
-bacteria and archaea, every superkingdom — and every individual organism — reaches
-peak modality fusion at exactly the same network depth (layer 35).
+ESM3 ingests a protein through several channels at once, including amino-acid
+sequence, three-dimensional structure, secondary structure (SS8), solvent
+accessibility (SASA), and discrete functional annotations, summing their embeddings
+into a single residual stream. Whether these modalities occupy separate subspaces,
+and at what depth they fuse, has not been characterised. The present analysis runs
+`esm3-sm-open-v1` once per modality in isolation and applies representational-similarity
+analysis across all 48 layers. The four physical modalities (sequence, structure,
+SS8, SASA) begin in distinct subspaces, remain maximally separated through roughly
+the first half of the network, and then fuse into a shared low-dimensional subspace
+between layers 25 and 35. The fusion is ordered. The structure-derived modalities are
+mutually aligned from the input, whereas sequence joins last, after layer 28. The
+functional-annotation modality never fuses. It remains representationally orthogonal
+to the physical modalities at every layer, and this orthogonality holds whether the
+annotation is supplied whole-protein or per-residue, which identifies it as a
+content-driven separation rather than a tokenisation artifact. The fusion is a learned
+property, absent in a randomly initialised model of the same architecture, holds at the
+residue level below the mean-pool, and reorganises variance while the stream never
+approaches isotropy. Fusion depth is independent of protein length but is delayed by
+structural disorder. The phenomenon is universal across the tree of life. Across 5,555
+proteins from 12 organisms spanning eukaryota, bacteria, and archaea, every
+superkingdom, and every individual organism, reaches peak modality fusion at the same
+network depth (layer 35).
 
 ## 1. Introduction
 
-Multimodal protein language models such as ESM3 are trained to reason jointly over
-sequence and structure. Architecturally, each input modality has its own embedding
-table, and the per-residue embeddings are summed before the transformer trunk. This
-makes a natural mechanistic-interpretability question available: are the modalities
-kept in separate parts of the representation, or does the network blend them — and
-if it blends them, *where*?
+Multimodal protein language models such as ESM3 reason jointly over sequence and
+structure. Each input modality has its own embedding table, and the per-residue
+embeddings are summed before the transformer trunk. This architecture raises a
+mechanistic question. The modalities may be kept in separate parts of the
+representation, or the network may blend them, and if it blends them, the depth at
+which it does so is unknown.
 
-We take a geometry-first, descriptive approach. For each protein we run ESM3 once
-per modality in isolation (all other modalities masked), plus an all-modalities
-reference, and read out the residual stream at every layer. The collection of these
-per-(protein, modality, layer) representations is an atlas of how multimodal
-information is organised across depth. We characterise it with standard
-representational-geometry tools — silhouette score, linear CKA, effective rank,
-and linear probes — and a battery of controls.
-
-This is **Act 1** (a descriptive atlas); causal steering, SAE dictionaries, and
-cross-architecture comparison are deferred to / handled in companion work.
+The present analysis takes a geometry-first, descriptive approach. For each protein,
+ESM3 runs once per modality in isolation, with all other modalities masked, together
+with an all-modalities reference, and the residual stream is read out at every layer.
+The resulting collection of per-(protein, modality, layer) representations forms an
+atlas of how multimodal information is organised across depth. Standard
+representational-geometry tools, namely silhouette score, linear CKA, effective rank,
+and linear probes, characterise the atlas, supported by several controls. This work
+is the first stage of a larger program; causal steering, sparse-autoencoder
+dictionaries, and cross-architecture comparison are handled in companion work.
 
 ## 2. Methods
 
-**Model and modalities.** `esm3-sm-open-v1` (1.4B parameters, 48 transformer
-blocks, d_model = 1536). We study six *conditions*: five single-modality inputs —
-`sequence`, `structure`, `ss8`, `sasa`, `function` — and `all` (every modality
-supplied jointly). Structure is provided as VQ structure tokens from coordinates;
-SS8/SASA are computed by DSSP from the structure; `function` is provided as
-whole-protein InterPro annotations.
+**Model and modalities.** The model is `esm3-sm-open-v1` (1.4 billion parameters, 48
+transformer blocks, model dimension 1536). Six conditions are studied, comprising five
+single-modality inputs (sequence, structure, SS8, SASA, and function) and an
+all-modalities condition in which every modality is supplied jointly. Structure is
+provided as vector-quantised structure tokens derived from coordinates, SS8 and SASA
+are computed by DSSP from the structure, and function is provided as whole-protein
+InterPro annotations filtered to the 29,026-entry vocabulary of the ESM3 function
+tokeniser.
 
-**Datasets.** A 199-protein human pilot for development; a **892-protein** human set
-(the main results); and a **5,984-protein, 12-organism set spanning eukaryota,
-bacteria and archaea** for the universality test. Structures are AlphaFold-DB models
-(uniform release), SS8/SASA from DSSP (mkdssp 4.6.1 via ESM's `ProteinChain`),
-InterPro/GO from UniProt.
+**Datasets.** Three datasets were used, namely a 199-protein human pilot for
+development, an 892-protein human set for the main results, and a 5,984-protein set
+drawn from 12 organisms spanning eukaryota, bacteria, and archaea for the universality
+test. Structures are AlphaFold-DB models of a single release, SS8 and SASA are computed
+with DSSP (mkdssp 4.6.1, via ESM's `ProteinChain`), and InterPro and Gene Ontology
+annotations are taken from UniProt.
 
-**Harvesting.** For each (protein, condition) we run one forward pass and cache the
-residual stream at all 48 layers, mean-pooled over residues (BOS/EOS excluded). A
-100-protein subset additionally stores per-residue activations (fp16, 7 layers) for
-the pooling control.
+**Harvesting.** For each (protein, condition) pair, ESM3 runs one forward pass and the
+residual stream is cached at all 48 layers, mean-pooled over residues with the special
+tokens excluded. A 100-protein subset additionally stores per-residue activations at
+seven layers for the pooling control.
 
-**Metrics.** Per layer: (i) **silhouette** of the conditions (Euclidean, full
-1536-d); (ii) **linear CKA** (Kornblith et al. 2019) between every condition pair,
-protein-aligned; (iii) an **integration index** = mean pairwise CKA; (iv)
-**effective rank** = exp(entropy of the covariance eigenspectrum), whole-cloud vs.
-per-condition; (v) a protein-grouped 5-fold logistic **probe** of modality identity,
-in full-dim and in the top-3 PCA geometry. Embeddings for visualisation use PCA
-(per-layer and a shared "joint" basis across layers).
+**Metrics.** Each layer is summarised by the silhouette score of the conditions
+(Euclidean, in the full 1536-dimensional space), by the linear CKA of Kornblith et al.
+between every protein-aligned condition pair, by an integration index defined as the
+mean pairwise CKA, by the effective rank computed as the exponential of the entropy of
+the covariance eigenspectrum for the whole cloud and for each condition, and by a
+protein-grouped five-fold logistic probe of modality identity evaluated both in the
+full space and in the top-3 PCA geometry. Visualisations use PCA, fit per layer and in
+a shared basis across layers.
 
-**Controls.** A random-init model (trunk + modality embeddings reinitialised,
-structure encoder preserved); a per-residue replication; a subsampling-convergence
-analysis; label-permutation nulls and protein-bootstrap CIs.
+**Controls.** The controls comprise a randomly initialised model whose trunk and
+modality embeddings are reset while the structure encoder is preserved, a per-residue
+replication, a subsampling-convergence analysis, label-permutation nulls, and
+protein-bootstrap confidence intervals.
 
 ## 3. Results
 
-### R1 — Physical modalities fuse sharply at mid-depth
-Condition separation (silhouette) *rises* from 0.32 at the input to a peak of **0.42
-at layer 24**, then collapses to a minimum of **0.156 at layers 35–38**, with a
-partial re-separation at the final layers. The integration index moves inversely.
-The transition is sharp and localised (knee ~L25–26), not gradual.
-*(`figures/scaled/metrics/metrics_vs_depth.png`; hero: `figures/scaled/gifs/depth_sweep.gif`.)*
+### Physical modalities fuse sharply at mid-depth
+Condition separation, measured by silhouette score, rises from 0.32 at the input to a
+maximum of 0.42 at layer 24, then falls to a minimum of 0.156 at layers 35 to 38, with
+a partial re-separation at the final layers (Figure 1b). The integration index moves
+inversely. The transition is sharp and localised, with a knee near layer 25, rather
+than gradual. The accompanying joint-PCA projection shows five separated clusters
+through layer 24 that collapse into one cloud by layer 35 (Figure 1a).
 
-### R2 — The fusion is ordered; sequence is the last physical modality to join
-Per-pair CKA shows the structure-derived modalities (structure, SS8, SASA) are
-mutually aligned from layer 0, whereas every `sequence ↔ *` pair stays near CKA ≈
-0.2 until **~L28–33**, then rises. Sequence — the one channel carrying information
-not derivable from the structure — integrates last.
-*(`figures/scaled/metrics/cka_pairs_vs_depth.png`.)*
+### The fusion is ordered, and sequence joins last
+Per-pair CKA shows that the structure-derived modalities (structure, SS8, and SASA) are
+mutually aligned from layer 0, whereas every pairing that involves sequence stays near
+a CKA of 0.2 until layer 28 and rises thereafter (Figure 2a). Sequence, the one channel
+carrying information that cannot be derived from the structure, integrates last.
 
-### R3 — The functional-annotation modality never fuses (content-driven)
-Every `function ↔ *` CKA stays ≈ 0.01–0.05 across all 48 layers while structure ↔
-all reaches ≈ 0.99. We verify this is not a degenerate representation (the function
-cloud has real cross-protein spread). We further rule out a *granularity* artifact —
-function is the only whole-protein modality — by adding ESM3's **per-residue**
-`residue_annotation` modality, driven by real InterPro residue-site annotations
-(632/892 proteins). Per-residue functional annotation also stays largely orthogonal
-(CKA ↔ physical ≈ 0.1, transient peak ≈ 0.5, never the ≈ 0.99 of fusion). Thus ESM3
-keeps functional information in a separate subspace **regardless of granularity** —
-a content-driven separation.
-*(`figures/scaled/metrics/residue_annotation_compare.png`.)*
+### The functional-annotation modality never fuses
+Every pairing of the function condition with another condition stays near a CKA of 0.01
+to 0.05 across all 48 layers, while structure reaches a CKA of about 0.99 with the
+all-modalities reference. This orthogonality does not stem from a degenerate
+representation, because the function cloud retains genuine cross-protein spread, with an
+effective rank of 3.5 to 218 across layers. One alternative explanation is granularity,
+because function is the only whole-protein modality whereas the physical modalities vary
+residue by residue. To test this explanation, the per-residue `residue_annotation`
+modality of ESM3 was added, driven by InterPro residue-site annotations available for
+632 of the 892 proteins. Per-residue functional annotation also stays largely
+orthogonal, with a CKA against the physical modalities near 0.1 and a transient maximum
+near 0.5, never approaching the CKA of about 0.99 that marks fusion (Figure 2b).
+Functional information is therefore held in a separate subspace irrespective of
+granularity, a content-driven separation.
 
-### R4 — The fusion is learned, not architectural
-A random-initialised model of the same architecture (inputs unchanged) shows **no
-fusion**: silhouette is flat at ≈ 0.62 and the integration index flat at ≈ 0.71
-across all 48 layers, versus the trained model's peak-then-collapse. Fusion is
-therefore a learned property, not a consequence of summing modality embeddings.
-*(`figures/scaled/metrics/randinit_control.png`.)*
+### The fusion is learned, not architectural
+A model with the same architecture but randomly initialised trunk and modality
+embeddings, with the structure encoder preserved so that inputs remain meaningful,
+shows no fusion. Condition separation stays near 0.62 and the integration index near
+0.71 across all 48 layers, against the trained model's peak-then-collapse (Figure 3a).
+Fusion is therefore a learned property and not a consequence of summing modality
+embeddings.
 
-### R5 — Fusion holds below the mean-pool
-At the residue level (100-protein subset), the integration index rises with depth
-(0.19 → 0.59), mirroring the pooled curve. Fusion is not an averaging artifact.
-*(`figures/scaled/metrics/per_residue_validation.png`.)*
+### Fusion holds below the mean-pool
+Recomputed on residue-level representations of a 100-protein subset, the integration
+index rises with depth from 0.19 to 0.59, mirroring the pooled curve (Figure 3b).
+Fusion is not an averaging artifact.
 
-### R6 — Fusion is a re-organisation, not a collapse
-Effective rank collapses to ≈ 3 at the L24 separation peak, then **expands to ≈ 85
-in the fusion zone (L36–38)** before contracting. Whole-cloud and per-condition
-ranks converge at the fused layers. So fusion converts between-condition variance
-into within-condition variance while the stream **never approaches isotropy** (peak
-≈ 85 of 1536). The full-dim identity probe stays at 1.0 throughout (a thin "modality
-tag" persists), while the top-3 PCA probe dips to ≈ 0.68 in the fusion zone — driven
-by SASA (recall ≈ 0.33) — even as `function` recall stays ≈ 1.0.
-*(`figures/scaled/metrics/diagnostics.png`.)*
+### Fusion reorganises variance without approaching isotropy
+Effective rank of the whole cloud collapses to about 3 at the layer-24 separation peak,
+then expands to about 85 of a possible 1536 in the fusion zone before contracting, and
+the whole-cloud and per-condition ranks converge once the conditions are fused
+(Figure 3c). Fusion therefore converts between-condition variance into within-condition
+variance while the stream never approaches isotropy. A logistic probe of modality
+identity reaches an accuracy of 1.0 in the full 1536-dimensional stream at every layer,
+which indicates that a thin additive identity signal persists, whereas the same probe
+in the top-3 PCA geometry falls to about 0.68 in the fusion zone, driven mainly by
+SASA, even as the function condition stays decodable throughout (Figure S3).
 
-### R7 — Fusion depth depends on secondary-structure content, not length or prediction confidence
-Across 892 proteins, fusion-onset is independent of length (Spearman r = −0.04,
-p = 0.26) but is delayed by structural disorder (coil fraction r = +0.22,
-p = 3×10⁻¹¹; helix fraction r = −0.20, p = 3×10⁻⁹): well-folded, helical proteins
-fuse earlier. Crucially, fusion-onset has **no relationship with AlphaFold
-confidence** (mean pLDDT r = +0.003, p = 0.93), so the disorder effect reflects
-genuine secondary-structure *content*, not the model's structural *uncertainty*.
-*(`figures/scaled/metrics/biology_breakdown.png`.)*
+### Fusion depth tracks secondary-structure content
+Across the 892 proteins, fusion-onset depth is independent of protein length (Spearman
+r of -0.04, p of 0.26) but is delayed by structural disorder, with a coil-fraction
+correlation of +0.22 (p of 3e-11) and a helix-fraction correlation of -0.20 (p of
+3e-9), so that well-folded, helical proteins fuse earlier (Figure 4a). Fusion-onset has
+no relationship with AlphaFold confidence (mean pLDDT correlation of +0.003, p of 0.93).
+The disorder effect therefore reflects genuine secondary-structure content rather than
+the model's structural uncertainty.
 
-### R8 — Fusion is universal across the tree of life
-On **5,555 proteins from 12 organisms spanning all three superkingdoms**, the
-pooled fusion curve is essentially identical to the human-only result (silhouette
-peak 0.42 @ L23, minimum 0.152 @ L35 vs. 0.42 @ L24, 0.156 @ L35). Stratifying by
-superkingdom, **eukaryota, bacteria and archaea all show the same peak-then-collapse
-and reach minimum separation at exactly L35** (peaks 0.42 / 0.48 / 0.50; minima
-0.164 / 0.151 / 0.149) — the curves are nearly superimposable. Per-organism, the
-fusion layer is **L35 for all 12 organisms** (sd = 0). Multimodal fusion is thus a
-universal, depth-locked property of ESM3, not an artifact of the curated human set.
-*(`figures/diverse/metrics/stratified_fusion.png`.)*
+### Fusion is universal across the tree of life
+Across 5,555 proteins from 12 organisms spanning all three superkingdoms, the pooled
+fusion curve is nearly identical to the human-only result, with a silhouette maximum of
+0.42 at layer 23 and a minimum of 0.152 at layer 35 against 0.42 at layer 24 and 0.156
+at layer 35. Stratified by superkingdom, the eukaryota, bacteria, and archaea curves
+show the same peak-then-collapse and reach minimum separation at layer 35 (Figure 4b),
+with maxima of 0.42, 0.48, and 0.50 and minima of 0.164, 0.151, and 0.149. Every one of
+the 12 organisms reaches its minimum at layer 35, with a standard deviation of 0
+(Figure S4). Multimodal fusion is therefore a universal, depth-locked property of ESM3
+and not an artifact of the curated human set.
 
 ## 4. Discussion
 
-ESM3 organises its inputs into two representational regimes: a **shared physical
-subspace** that the four geometry/sequence modalities collapse into at mid-depth,
-and a **persistent functional-annotation subspace** that stays orthogonal
-throughout. The mid-network fusion of physical modalities, the late integration of
-sequence specifically, and the disorder-dependence of fusion depth together suggest
-the network first builds modality-specific features and then commits to a unified
-physical representation once structure is "resolved," while keeping discrete
-functional labels on a separate axis.
+ESM3 organises its inputs into two representational regimes. The four geometry and
+sequence modalities collapse into a shared, low-dimensional physical subspace at
+mid-depth, whereas the functional-annotation modality occupies a subspace that stays
+orthogonal throughout the network. The mid-network timing of physical fusion, the late
+entry of sequence, and the dependence of fusion depth on secondary-structure content
+together suggest that the network first builds modality-specific features and then
+commits to a unified physical representation once secondary structure is resolved,
+while holding discrete functional labels on a separate axis. The depth-locked
+universality across the tree of life indicates that this organisation is intrinsic to
+the trained model rather than a property of any particular proteome.
 
 ## 5. Limitations
 
-- **Model scale.** Only one model — `esm3-sm-open-v1` is the sole openly available
-  *multimodal* ESM3; larger ESM3 is API-gated and ESM2 is sequence-only — so we
-  cannot test whether (fractional) fusion depth scales with capacity.
-- **Structures** are AlphaFold predictions. (The disorder effect in R7 is *not* an
-  artifact of prediction confidence — fusion depth is uncorrelated with pLDDT — but
-  an experimental-structure replication would still strengthen the structure-derived
-  conditions.)
-- **Descriptive, not causal.** We characterise the geometry; we do not intervene.
+Several limitations bound these conclusions. Only one model was studied, because
+`esm3-sm-open-v1` is the sole openly available multimodal ESM3, larger ESM3 models are
+reachable only through a gated interface, and the ESM2 family is sequence-only and
+cannot support the experiment. Whether the fractional fusion depth scales with model
+capacity therefore remains open. All structures are AlphaFold predictions; although the
+disorder effect is uncorrelated with prediction confidence and so is not an artifact of
+it, a replication on experimental structures would further strengthen the
+structure-derived conditions. Finally, the present work characterises the geometry of
+the residual stream and does not intervene on it, so the analysis is descriptive rather
+than causal.
 
-## 6. Reproducibility
+## 6. Data and code availability
 
-The full pipeline is scripted and config-driven: curation
-(`curate_diverse.py`), structure fetch (`fetch_structures.py`), DSSP annotation
-(`annotate_structures.py`), harvest (`harvest_scaled.py`, `config/*.json`),
-aggregation (`aggregate_activations.py`), metrics (`compute_metrics.py`,
-`compute_diagnostics.py`, `render_cka_heatmap.py`), controls
-(`per_residue_validate.py`, `plot_randinit_control.py`,
-`compare_residue_annotation.py`), and the visual heroes (`render_depth_sweep.py`).
-Colours use the colorblind-safe `pypubfigs` palette.
+The full pipeline is scripted and configuration-driven, covering curation, structure
+retrieval, DSSP annotation, activation harvesting, aggregation, the metric and control
+analyses, and figure assembly. Colours follow the colorblind-safe `pypubfigs` palette.
 
 ## Figure index
 
-| # | Figure | File |
-|---|--------|------|
-| 1 | Depth-sweep hero | `figures/scaled/gifs/depth_sweep.gif` |
-| 2 | Fusion curve (silhouette / CKA / integration) | `figures/scaled/metrics/metrics_vs_depth.png` |
-| 3 | Per-pair CKA across depth | `figures/scaled/metrics/cka_pairs_vs_depth.png` |
-| 4 | Function vs residue-annotation (granularity) | `figures/scaled/metrics/residue_annotation_compare.png` |
-| 5 | Random-init control | `figures/scaled/metrics/randinit_control.png` |
-| 6 | Per-residue validation | `figures/scaled/metrics/per_residue_validation.png` |
-| 7 | Diagnostics (probe / dim / significance) | `figures/scaled/metrics/diagnostics.png` |
-| 8 | Biology breakdown | `figures/scaled/metrics/biology_breakdown.png` |
-| 9 | Universality across superkingdoms | `figures/diverse/metrics/stratified_fusion.png` |
+Main figures (`paper/figures/figure{1..4}.png`) and supplementary figures
+(`figureS{1..6}.png`) are described in `paper/figure_captions.md`.
+
+| # | Figure |
+|---|--------|
+| 1 | Joint-PCA depth snapshots and the 48-layer fusion curve |
+| 2 | Per-pair CKA across depth, and the function vs residue-annotation control |
+| 3 | Random-init control, per-residue validation, and effective rank |
+| 4 | Fusion depth vs secondary structure, and universality across superkingdoms |
+| S1 | Sample-size convergence |
+| S2 | Significance against permutation nulls |
+| S3 | Modality-identity probe |
+| S4 | Per-organism universality |
+| S5 | Per-layer condition-by-condition CKA |
+| S6 | Diverse dataset composition |
