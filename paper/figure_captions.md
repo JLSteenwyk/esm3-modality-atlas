@@ -90,3 +90,11 @@ and the function row and column stay near CKA 0 at every depth.
 **Figure S6. Composition of the 12-organism diverse set.** (a) Proteins curated per
 organism (about 500 each), coloured by superkingdom. (b) Protein-length distributions
 by superkingdom over the 50 to 800 residue range.
+
+**Figure S7. The representation is organised by modality, not by source organism.**
+(a) The layer-40 all-modalities representation of 5,555 proteins, projected to three
+dimensions and coloured by superkingdom. Eukaryota, bacteria, and archaea are
+intermixed rather than separated. (b) Across depth, condition separation by modality
+(silhouette, reaching 0.42 at layer 24) far exceeds separation by superkingdom, which
+stays near 0 at every layer (peaking at only 0.08 at layer 33). ESM3 therefore
+represents proteins by their biochemistry rather than their taxonomy.

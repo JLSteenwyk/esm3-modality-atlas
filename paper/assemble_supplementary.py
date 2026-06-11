@@ -199,6 +199,61 @@ def figS6():
     plt.close(fig); print("wrote figureS6.png")
 
 
+# S7 — the representation is organism-agnostic --------------------------------
+def figS7():
+    from sklearn.decomposition import PCA
+    from sklearn.metrics import silhouette_score
+    BY = ROOT / "activations" / "diverse" / "by_layer"
+    cur = json.loads((ROOT / "data/diverse/curation_summary.json").read_text())
+    o2k = {o: v["superkingdom"] for o, v in cur["per_organism"].items()}
+    kcol = {"eukaryota": "#648FFF", "bacteria": "#FE6100", "archaea": "#009E73"}
+    layers = sorted(int(p.stem.split("_")[-1]) for p in BY.glob("layer_*.npz"))
+
+    cache = R / "diverse" / "superkingdom_sil.json"
+    if cache.exists():
+        sk = json.loads(cache.read_text())
+    else:
+        sk = {"layers": layers, "silhouette": []}
+        for L in layers:
+            d = np.load(BY / f"layer_{L:02d}.npz", allow_pickle=True)
+            m = d["condition"].astype(str) == "all"
+            king = np.array([o2k.get(o, "?") for o in d["category"][m].astype(str)])
+            sk["silhouette"].append(float(silhouette_score(d["coords"][m].astype(np.float64), king)))
+        cache.write_text(json.dumps(sk))
+
+    mod = jload("diverse/metrics.json")["series"]
+    fig = plt.figure(figsize=(8.4, 3.5))
+    axA = fig.add_subplot(1, 2, 1, projection="3d")
+    d = np.load(BY / "layer_40.npz", allow_pickle=True)
+    m = d["condition"].astype(str) == "all"
+    Z = PCA(3).fit_transform(d["coords"][m].astype(np.float64))
+    king = np.array([o2k.get(o, "?") for o in d["category"][m].astype(str)])
+    for k in ["eukaryota", "bacteria", "archaea"]:
+        mm = king == k
+        axA.scatter(Z[mm, 0], Z[mm, 1], Z[mm, 2], s=2, c=kcol[k], alpha=0.35,
+                    edgecolors="none", depthshade=False, label=k)
+    axA.set_xticks([]); axA.set_yticks([]); axA.set_zticks([])
+    axA.set_title("layer-40 representation by superkingdom", fontsize=8.5)
+    axA.view_init(18, -60)
+    axA.legend(loc="upper center", bbox_to_anchor=(0.5, -0.02), ncol=3,
+               frameon=False, fontsize=7)
+    fig.text(0.07, 0.95, "a", fontsize=12, fontweight="bold", color=INK)
+
+    axB = fig.add_subplot(1, 2, 2)
+    axB.plot(mod["layers"], mod["silhouette"], "-", color=INK, lw=2,
+             label="modality (condition)")
+    axB.plot(sk["layers"], sk["silhouette"], "-", color="#94a3b8", lw=2,
+             label="superkingdom")
+    axB.axhline(0, ls=":", color="0.6", lw=1)
+    axB.set_xlabel("layer"); axB.set_ylabel("silhouette")
+    axB.set_xticks(range(0, 48, 8))
+    below(axB, ncol=2)
+    panel(axB, "b")
+    fig.tight_layout(rect=(0, 0.04, 1, 1))
+    fig.savefig(OUT / "figureS7.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS7.png")
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
-    figS1(); figS2(); figS3(); figS4(); figS5(); figS6()
+    figS1(); figS2(); figS3(); figS4(); figS5(); figS6(); figS7()
