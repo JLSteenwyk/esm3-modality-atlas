@@ -48,6 +48,14 @@ MODALITY_CONDITIONS: tuple[str, ...] = (
     "function",
     "residue_annotation",
     "all",
+    # leave-one-out ablations: every modality of "all" except the named one. Used
+    # to measure each modality's contribution to the fused representation, by
+    # comparing "all" against "all" with that modality withheld.
+    "all_no_sequence",
+    "all_no_structure",
+    "all_no_ss8",
+    "all_no_sasa",
+    "all_no_function",
 )
 
 # ESM-3's SS8 vocabulary is {G, H, I, T, E, B, S, C}. DSSP can additionally emit
@@ -94,6 +102,12 @@ class ProteinInputs:
         # "all" requires sequence (always present) and at least one other modality
         if len(out) > 1:
             out.append("all")
+            # leave-one-out conditions: "all" with one present modality withheld,
+            # available as long as withholding it leaves at least one modality
+            present = [m for m in ("sequence", "structure", "ss8", "sasa",
+                                   "function") if m in out]
+            if len(present) > 1:
+                out.extend(f"all_no_{m}" for m in present)
         return out
 
 
@@ -214,16 +228,19 @@ def _build_forward_kwargs(inputs: ProteinInputs, condition: str) -> dict:
         if inputs.residue_annotation_tokens is None:
             raise ValueError(f"{inputs.sequence_id}: no residue_annotation tokens")
         return {"residue_annotation_tokens": inputs.residue_annotation_tokens}
-    if condition == "all":
-        kw = {"sequence_tokens": inputs.sequence_tokens}
-        if inputs.structure_tokens is not None:
-            kw["structure_tokens"] = inputs.structure_tokens
-        if inputs.ss8_tokens is not None:
-            kw["ss8_tokens"] = inputs.ss8_tokens
-        if inputs.sasa_tokens is not None:
-            kw["sasa_tokens"] = inputs.sasa_tokens
-        if inputs.function_tokens is not None:
-            kw["function_tokens"] = inputs.function_tokens
+    if condition == "all" or condition.startswith("all_no_"):
+        drop = condition[len("all_no_"):] if condition.startswith("all_no_") else ""
+        tok = {
+            "sequence": inputs.sequence_tokens,
+            "structure": inputs.structure_tokens,
+            "ss8": inputs.ss8_tokens,
+            "sasa": inputs.sasa_tokens,
+            "function": inputs.function_tokens,
+        }
+        kw = {f"{m}_tokens": t for m, t in tok.items()
+              if t is not None and m != drop}
+        if not kw:
+            raise ValueError(f"{inputs.sequence_id}: no tokens left for {condition!r}")
         return kw
     raise ValueError(f"Unknown condition: {condition!r}")
 
