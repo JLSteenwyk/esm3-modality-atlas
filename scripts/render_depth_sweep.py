@@ -102,16 +102,24 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--scaled", action="store_true",
                     help="render from the scaled 6-modality / 48-layer run")
+    ap.add_argument("--tag", default="",
+                    help="dataset tag under figures/ (e.g. 'scaled', 'diverse')")
     args = ap.parse_args()
     global JOINT_DIR, PER_DIR, OUT, SUBTITLE
     SUBTITLE = ("ESM3's input modalities collapse into one shared subspace "
                 "with depth")
-    if args.scaled:
-        JOINT_DIR = ROOT / "figures" / "scaled" / "embed" / "joint"
-        PER_DIR = ROOT / "figures" / "scaled" / "embed" / "per_layer"
-        OUT = ROOT / "figures" / "scaled" / "gifs" / "depth_sweep.gif"
-        SUBTITLE = ("ESM3's four physical modalities fuse into one subspace "
-                    "— function stays separate  ·  892 proteins")
+    tag = "scaled" if args.scaled else args.tag
+    SUBTITLES = {
+        "scaled": "ESM3's four physical modalities fuse into one subspace "
+                  "— function stays separate  ·  892 proteins",
+        "diverse": "ESM3's physical modalities fuse, function stays separate  ·  "
+                   "5,555 proteins across the tree of life",
+    }
+    if tag:
+        JOINT_DIR = ROOT / "figures" / tag / "embed" / "joint"
+        PER_DIR = ROOT / "figures" / tag / "embed" / "per_layer"
+        OUT = ROOT / "figures" / tag / "gifs" / "depth_sweep.gif"
+        SUBTITLE = SUBTITLES.get(tag, SUBTITLE)
 
     layers = sorted(int(p.stem.split("_")[-1]) for p in JOINT_DIR.glob("layer_*.npz"))
     coords = {L: np.load(JOINT_DIR / f"layer_{L:02d}.npz", allow_pickle=True)["coords3d"]

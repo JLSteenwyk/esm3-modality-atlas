@@ -46,6 +46,9 @@ def main() -> None:
                     help="activations base (reads <base>/by_layer)")
     ap.add_argument("--tag", default="",
                     help="output subdir under figures/ (e.g. 'scaled')")
+    ap.add_argument("--subsample", type=int, default=0,
+                    help="randomly keep this many proteins before PCA (0 = all); "
+                         "for tractable visualisation of very large sets")
     args = ap.parse_args()
     global IN_DIR, OUT_PER, OUT_JOINT
     IN_DIR = ROOT / args.base / "by_layer"
@@ -59,16 +62,30 @@ def main() -> None:
     layers: list[int] = index["layers"]
     print(f"layers: {layers}")
 
+    # Optional protein subsample (same proteins across all layers), for tractable
+    # PCA on very large sets. Built from the first layer's protein order.
+    keep_mask = None
+    if args.subsample:
+        d0 = np.load(IN_DIR / f"layer_{layers[0]:02d}.npz", allow_pickle=True)
+        pid0 = d0["protein_id"].astype(str)
+        proteins = np.array(sorted(set(pid0)))
+        rng = np.random.default_rng(0)
+        keep = set(rng.choice(proteins, min(args.subsample, len(proteins)),
+                              replace=False).tolist())
+        keep_mask = np.isin(pid0, list(keep))
+        print(f"subsampling to {len(keep)} proteins ({keep_mask.sum()} rows/layer)")
+
     # Load every layer's coords into memory once. Each is (N*C, 1536) — small.
     coords_by_layer: dict[int, np.ndarray] = {}
     labels_by_layer: dict[int, dict] = {}
     for L in layers:
         d = np.load(IN_DIR / f"layer_{L:02d}.npz", allow_pickle=True)
-        coords_by_layer[L] = d["coords"]
+        m = keep_mask if keep_mask is not None else slice(None)
+        coords_by_layer[L] = d["coords"][m]
         labels_by_layer[L] = {
-            "condition":  d["condition"],
-            "protein_id": d["protein_id"],
-            "category":   d["category"],
+            "condition":  d["condition"][m],
+            "protein_id": d["protein_id"][m],
+            "category":   d["category"][m],
         }
 
     # --- Per-layer PCA: independent basis per layer ---
