@@ -40,6 +40,16 @@ def panel(ax, letter, dx=-0.10, dy=1.06):
             fontweight="bold", va="top", ha="right", color=INK)
 
 
+def below(ax, ncol=2, y=-0.32, handles=None, labels=None):
+    """Place a legend below the axes (outside the plot) to avoid overlap."""
+    kw = dict(loc="upper center", bbox_to_anchor=(0.5, y), ncol=ncol,
+              frameon=False, fontsize=7, handlelength=1.6, columnspacing=1.2)
+    if handles is not None:
+        ax.legend(handles, labels, **kw)
+    else:
+        ax.legend(**kw)
+
+
 def jload(p):
     return json.loads((R / p).read_text())
 
@@ -49,56 +59,64 @@ def jload(p):
 # --------------------------------------------------------------------------- #
 def figure1():
     snaps = [0, 12, 24, 35, 47]
+    views = [(18, -62), (10, 28), (34, -120)]   # three camera orientations
     coords = {L: np.load(JOINT / f"layer_{L:02d}.npz", allow_pickle=True)
               for L in snaps}
     cond = coords[0]["condition"].astype(str)
     allc = np.concatenate([coords[L]["coords3d"] for L in snaps])
     lim = [(np.percentile(allc[:, i], 1.5), np.percentile(allc[:, i], 98.5))
            for i in range(3)]
+    nrow = len(views)
 
-    fig = plt.figure(figsize=(7.2, 5.4))
-    gs = gridspec.GridSpec(2, len(snaps), height_ratios=[1.0, 1.15],
-                           hspace=0.32, wspace=0.05)
-    for j, L in enumerate(snaps):
-        ax = fig.add_subplot(gs[0, j], projection="3d")
-        c = coords[L]["coords3d"]
-        for k in CONDITIONS:
-            m = cond == k
-            ax.scatter(c[m, 0], c[m, 1], c[m, 2], s=2, c=CONDITION_COLOR[k],
-                       alpha=0.55, edgecolors="none", depthshade=False)
-        ax.view_init(18, -62)
-        ax.set_xlim(*lim[0]); ax.set_ylim(*lim[1]); ax.set_zlim(*lim[2])
-        ax.set_xticks([]); ax.set_yticks([]); ax.set_zticks([])
-        ax.set_title(f"layer {L}", fontsize=8, pad=-2)
-        for axis in (ax.xaxis, ax.yaxis, ax.zaxis):
-            axis.pane.set_visible(False)
-    fig.text(0.07, 0.93, "a", fontsize=12, fontweight="bold", color=INK)
-    # shared legend
+    fig = plt.figure(figsize=(7.2, 1.45 * nrow + 2.6))
+    gs = gridspec.GridSpec(nrow + 1, len(snaps),
+                           height_ratios=[1] * nrow + [1.7],
+                           hspace=0.12, wspace=0.04)
+    for r, (el, az) in enumerate(views):
+        for j, L in enumerate(snaps):
+            ax = fig.add_subplot(gs[r, j], projection="3d")
+            c = coords[L]["coords3d"]
+            for k in CONDITIONS:
+                m = cond == k
+                ax.scatter(c[m, 0], c[m, 1], c[m, 2], s=1.6, c=CONDITION_COLOR[k],
+                           alpha=0.55, edgecolors="none", depthshade=False)
+            ax.view_init(el, az)
+            ax.set_xlim(*lim[0]); ax.set_ylim(*lim[1]); ax.set_zlim(*lim[2])
+            ax.set_xticks([]); ax.set_yticks([]); ax.set_zticks([])
+            if r == 0:
+                ax.set_title(f"layer {L}", fontsize=8, pad=-1)
+            if j == 0:
+                ax.text2D(-0.08, 0.5, f"view {r + 1}", transform=ax.transAxes,
+                          rotation=90, va="center", ha="center", fontsize=7,
+                          color="#64748b")
+            for axis in (ax.xaxis, ax.yaxis, ax.zaxis):
+                axis.pane.set_visible(False)
+    fig.text(0.065, 0.985, "a", fontsize=12, fontweight="bold", color=INK,
+             va="top")
+
+    # panel b — fusion curve (dual axis; line identity given by the coloured axes)
+    m = jload("scaled/metrics.json")["series"]
+    x = np.array(m["layers"])
+    axb = fig.add_subplot(gs[nrow, :])
+    axb.plot(x, m["silhouette"], "-o", color=SEQc, ms=2.5, lw=1.6)
+    axb2 = axb.twinx()
+    axb2.plot(x, m["integration_index"], "-s", color=INK, ms=2.5, lw=1.6)
+    axb.set_xlabel("layer")
+    axb.set_ylabel("condition separation\n(silhouette)", color=SEQc)
+    axb2.set_ylabel("integration index\n(mean pairwise CKA)", color=INK)
+    axb.tick_params(axis="y", labelcolor=SEQc)
+    axb2.tick_params(axis="y", labelcolor=INK)
+    axb.axvspan(25, 35, color="0.85", alpha=0.5, zorder=0)
+    axb.set_xticks(range(0, 48, 4))
+    axb2.spines["top"].set_visible(False)
+    panel(axb, "b", dx=-0.085, dy=1.12)
+
+    # modality colour key, one row at the very bottom
     handles = [plt.Line2D([0], [0], marker="o", ls="", ms=5,
                mfc=CONDITION_COLOR[k], mec="none", label=CONDITION_LABEL[k])
                for k in CONDITIONS]
-    fig.legend(handles=handles, loc="upper center", ncol=6, frameon=False,
-               bbox_to_anchor=(0.5, 0.50), fontsize=7.5)
-
-    # panel b — fusion curve
-    m = jload("scaled/metrics.json")["series"]
-    x = np.array(m["layers"])
-    axb = fig.add_subplot(gs[1, :])
-    axb.plot(x, m["silhouette"], "-o", color=SEQc, ms=2.5, lw=1.6,
-             label="condition separation (silhouette)")
-    axb2 = axb.twinx()
-    axb2.plot(x, m["integration_index"], "-s", color=INK, ms=2.5, lw=1.6,
-              label="integration index (mean pairwise CKA)")
-    axb.set_xlabel("layer"); axb.set_ylabel("silhouette", color=SEQc)
-    axb2.set_ylabel("integration index", color=INK)
-    axb.tick_params(axis="y", labelcolor=SEQc)
-    axb.axvspan(25, 35, color="0.85", alpha=0.5, zorder=0)
-    axb.set_xticks(range(0, 48, 4))
-    l1, la1 = axb.get_legend_handles_labels()
-    l2, la2 = axb2.get_legend_handles_labels()
-    axb.legend(l1 + l2, la1 + la2, loc="lower left", frameon=False)
-    axb2.spines["top"].set_visible(False)
-    panel(axb, "b", dx=-0.06, dy=1.10)
+    fig.legend(handles=handles, loc="lower center", ncol=6, frameon=False,
+               bbox_to_anchor=(0.5, -0.03), fontsize=8)
     fig.savefig(OUT / "figure1.png", bbox_inches="tight")
     plt.close(fig)
     print("wrote figure1.png")
@@ -146,7 +164,7 @@ def figure2():
              lw=1.6, label="function to physical")
     axb.set_xlabel("layer"); axb.set_ylabel("linear CKA"); axb.set_ylim(-0.03, 1.0)
     axb.set_xticks(range(0, 48, 4))
-    axb.legend(loc="upper left", frameon=False)
+    below(axb, ncol=3, y=-0.30)
     panel(axb, "b", dx=-0.09, dy=1.08)
     fig.savefig(OUT / "figure2.png", bbox_inches="tight")
     plt.close(fig)
@@ -164,7 +182,7 @@ def figure3():
     axA.plot(x, t["silhouette"], "-", color=INK, lw=1.8, label="trained")
     axA.plot(x, r["silhouette"], "--", color="#94a3b8", lw=1.8, label="random init")
     axA.set_xlabel("layer"); axA.set_ylabel("silhouette")
-    axA.set_xticks(range(0, 48, 8)); axA.legend(frameon=False, loc="upper right")
+    axA.set_xticks(range(0, 48, 8)); below(axA, ncol=2)
     panel(axA, "a")
 
     pr = jload("scaled/per_residue_validation.json")
@@ -174,7 +192,7 @@ def figure3():
     axB.plot(xp, pr["residue"]["integration"], "--s", color=SEQc, ms=3, lw=1.8,
              label="per-residue")
     axB.set_xlabel("layer"); axB.set_ylabel("integration index")
-    axB.set_xticks(xp); axB.legend(frameon=False, loc="upper left")
+    axB.set_xticks(xp); below(axB, ncol=2)
     panel(axB, "b")
 
     dg = jload("scaled/diagnostics.json")["per_layer"]
@@ -184,12 +202,10 @@ def figure3():
     axC.plot(L, ov, "-", color=INK, lw=1.8, label="whole cloud")
     axC.plot(L, wi, "--", color="#94a3b8", lw=1.6, label="per-condition")
     axC.set_xlabel("layer"); axC.set_ylabel("effective rank")
-    axC.set_xticks(range(0, 48, 8))
-    axC.text(0.5, 0.92, "never isotropic (peak ~85 of 1536)", transform=axC.transAxes,
-             ha="center", fontsize=6.3, style="italic", color="#64748b")
-    axC.legend(frameon=False, loc="center right")
+    axC.set_xticks(range(0, 48, 8)); axC.set_ylim(0, 118)
+    below(axC, ncol=2)
     panel(axC, "c")
-    fig.tight_layout()
+    fig.tight_layout(rect=(0, 0.05, 1, 1))
     fig.savefig(OUT / "figure3.png", bbox_inches="tight")
     plt.close(fig)
     print("wrote figure3.png")
@@ -209,13 +225,6 @@ def figure4():
              edgecolor="none", height=0.7)
     axA.set_yticks(range(len(order))); axA.set_yticklabels(order, fontsize=7)
     axA.set_xlabel("fusion-onset layer"); axA.set_xlim(20, 30)
-    cor = {c["vs"]: c for c in b["correlations"]}
-    axA.text(0.97, 0.04,
-             "onset vs disorder (coil) r = +0.22\n"
-             "onset vs length r = -0.04 (n.s.)\n"
-             "onset vs pLDDT r = +0.00 (n.s.)",
-             transform=axA.transAxes, ha="right", va="bottom", fontsize=6.2,
-             color="#334155")
     panel(axA, "a", dx=-0.32)
 
     s = jload("diverse/stratified.json")
@@ -227,10 +236,10 @@ def figure4():
                  lw=2.2 if g == "all" else 1.4,
                  label=f"{g} (n={s['n_by_group'][g]})")
     axB.set_xlabel("layer"); axB.set_ylabel("silhouette")
-    axB.set_xticks(range(0, 48, 8)); axB.legend(frameon=False, loc="lower left")
+    axB.set_xticks(range(0, 48, 8)); below(axB, ncol=2)
     axB.axvspan(34, 36, color="0.85", alpha=0.6, zorder=0)
     panel(axB, "b")
-    fig.tight_layout()
+    fig.tight_layout(rect=(0, 0.06, 1, 1))
     fig.savefig(OUT / "figure4.png", bbox_inches="tight")
     plt.close(fig)
     print("wrote figure4.png")

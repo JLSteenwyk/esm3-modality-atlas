@@ -9,7 +9,8 @@ captions and in headings).
 **Figure 1. Modality conditions occupy distinct subspaces early and fuse into a
 shared subspace at mid-depth.** (a) Mean-pooled residual-stream representations of
 892 human proteins under each single-modality condition, projected with a joint
-PCA fit across all 48 layers and shown at five depths. Each point is one
+PCA fit across all 48 layers and shown at five depths from three camera
+orientations (rows). Each point is one
 (protein, modality) representation, coloured by modality. The five conditions form
 separated clusters through layer 24 and collapse into one cloud by layer 35, while
 the functional-annotation condition (green) remains a distinct island. (b) Across

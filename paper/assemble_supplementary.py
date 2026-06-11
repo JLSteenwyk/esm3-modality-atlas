@@ -44,6 +44,11 @@ def panel(ax, letter, dx=-0.12, dy=1.07):
             fontweight="bold", va="top", ha="right", color=INK)
 
 
+def below(ax, ncol=2, y=-0.30, fontsize=7):
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, y), ncol=ncol,
+              frameon=False, fontsize=fontsize, handlelength=1.6, columnspacing=1.2)
+
+
 # S1 — sample-size convergence -------------------------------------------------
 def figS1():
     rng = np.random.default_rng(0)
@@ -75,7 +80,7 @@ def figS1():
         ax.errorbar(Ns, ig_m, yerr=ig_s, fmt="-s", color=INK, ms=3, capsize=2,
                     label="integration index")
         ax.set_xlabel("number of proteins"); ax.set_title(title)
-        ax.legend(frameon=False)
+        below(ax, ncol=2)
     axes[0].set_ylabel("metric value")
     fig.tight_layout(); fig.savefig(OUT / "figureS1.png", bbox_inches="tight")
     plt.close(fig); print("wrote figureS1.png")
@@ -97,8 +102,8 @@ def figS2():
         ax.plot(x, obs, "-o", color=col, ms=3, lw=1.6, label=f"{lab} (95% CI)")
         ax.plot(x, nm, ":", color=col, lw=1.3, label=f"{lab} permutation null")
     ax.set_xlabel("layer"); ax.set_ylabel("metric value"); ax.set_ylim(-0.05, 1.0)
-    ax.legend(frameon=False, fontsize=6.5)
-    fig.tight_layout(); fig.savefig(OUT / "figureS2.png", bbox_inches="tight")
+    below(ax, ncol=2, fontsize=6.5)
+    fig.tight_layout(rect=(0,0.04,1,1)); fig.savefig(OUT / "figureS2.png", bbox_inches="tight")
     plt.close(fig); print("wrote figureS2.png")
 
 
@@ -120,8 +125,8 @@ def figS3():
     ax.axhline(chance, ls=":", color="#94a3b8", lw=1.2)
     ax.text(L[-1], chance + 0.02, "chance", ha="right", fontsize=6.5, color="#94a3b8")
     ax.set_ylim(0, 1.03); ax.set_xlabel("layer"); ax.set_ylabel("decodability")
-    ax.set_xticks(range(0, 48, 8)); ax.legend(frameon=False, fontsize=6, ncol=2)
-    fig.tight_layout(); fig.savefig(OUT / "figureS3.png", bbox_inches="tight")
+    ax.set_xticks(range(0, 48, 8)); below(ax, ncol=4, fontsize=6)
+    fig.tight_layout(rect=(0,0.05,1,1)); fig.savefig(OUT / "figureS3.png", bbox_inches="tight")
     plt.close(fig); print("wrote figureS3.png")
 
 
@@ -143,8 +148,8 @@ def figS4():
             label="all (5,555)")
     ax.axvline(35, ls=":", color="0.5", lw=1)
     ax.set_xlabel("layer"); ax.set_ylabel("silhouette"); ax.set_xticks(range(0, 48, 8))
-    ax.legend(frameon=False, fontsize=7)
-    fig.tight_layout(); fig.savefig(OUT / "figureS4.png", bbox_inches="tight")
+    below(ax, ncol=4, fontsize=7)
+    fig.tight_layout(rect=(0,0.05,1,1)); fig.savefig(OUT / "figureS4.png", bbox_inches="tight")
     plt.close(fig); print("wrote figureS4.png")
 
 
@@ -189,7 +194,7 @@ def figS6():
         axB.hist(lens[king], bins=30, color=kcol[king], alpha=0.55,
                  label=f"{king} (n={len(lens[king])})")
     axB.set_xlabel("protein length (residues)"); axB.set_ylabel("count")
-    axB.legend(frameon=False); panel(axB, "b")
+    below(axB, ncol=3); panel(axB, "b")
     fig.tight_layout(); fig.savefig(OUT / "figureS6.png", bbox_inches="tight")
     plt.close(fig); print("wrote figureS6.png")
 
