@@ -25,9 +25,10 @@ architecture), holds below the mean-pool (at the residue level), is statisticall
 robust at our sample size, and is a representational *re-organisation* — between-
 condition variance is converted into within-condition variance while the stream
 never approaches isotropy. Fusion depth is independent of protein length but is
-delayed by structural disorder. [Universality across the tree of life — eukaryota,
-bacteria, archaea — established on a 12-organism set; *result pending the diverse
-run*.]
+delayed by structural disorder. Finally, the entire phenomenon is **universal
+across the tree of life**: on 5,555 proteins from 12 organisms spanning eukaryota,
+bacteria and archaea, every superkingdom — and every individual organism — reaches
+peak modality fusion at exactly the same network depth (layer 35).
 
 ## 1. Introduction
 
@@ -141,8 +142,15 @@ genuine secondary-structure *content*, not the model's structural *uncertainty*.
 *(`figures/scaled/metrics/biology_breakdown.png`.)*
 
 ### R8 — Fusion is universal across the tree of life
-*[Pending the diverse run: 5,984 proteins × 12 organisms × 3 superkingdoms. The
-per-superkingdom fusion curves will go here; `figures/diverse/metrics/stratified_fusion.png`.]*
+On **5,555 proteins from 12 organisms spanning all three superkingdoms**, the
+pooled fusion curve is essentially identical to the human-only result (silhouette
+peak 0.42 @ L23, minimum 0.152 @ L35 vs. 0.42 @ L24, 0.156 @ L35). Stratifying by
+superkingdom, **eukaryota, bacteria and archaea all show the same peak-then-collapse
+and reach minimum separation at exactly L35** (peaks 0.42 / 0.48 / 0.50; minima
+0.164 / 0.151 / 0.149) — the curves are nearly superimposable. Per-organism, the
+fusion layer is **L35 for all 12 organisms** (sd = 0). Multimodal fusion is thus a
+universal, depth-locked property of ESM3, not an artifact of the curated human set.
+*(`figures/diverse/metrics/stratified_fusion.png`.)*
 
 ## 4. Discussion
 
@@ -189,4 +197,4 @@ Colours use the colorblind-safe `pypubfigs` palette.
 | 6 | Per-residue validation | `figures/scaled/metrics/per_residue_validation.png` |
 | 7 | Diagnostics (probe / dim / significance) | `figures/scaled/metrics/diagnostics.png` |
 | 8 | Biology breakdown | `figures/scaled/metrics/biology_breakdown.png` |
-| 9 | Universality across superkingdoms | `figures/diverse/metrics/stratified_fusion.png` *(pending)* |
+| 9 | Universality across superkingdoms | `figures/diverse/metrics/stratified_fusion.png` |
