@@ -1,7 +1,7 @@
-"""Assemble the supplementary figure suite (figureS1..S6).
+"""Assemble the supplementary figure suite (figureS1..S8).
 
 Re-plots robustness and breakdown analyses that support, but do not lead, the main
-figures. Output: paper/figures/figureS{1..6}.png at 300 dpi; captions in
+figures. Output: paper/figures/figureS{1..8}.png at 300 dpi; captions in
 paper/figure_captions.md.
 """
 
@@ -254,6 +254,76 @@ def figS7():
     plt.close(fig); print("wrote figureS7.png")
 
 
+def figS8():
+    """Orphan test: function stays orthogonal whether or not it is redundant."""
+    from scipy.stats import mannwhitneyu, spearmanr
+    from sklearn.decomposition import PCA
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.model_selection import StratifiedKFold, cross_val_predict
+    from sklearn.pipeline import make_pipeline
+    from sklearn.preprocessing import StandardScaler
+
+    MP = ROOT / "activations" / "scaled" / "per_protein"
+    meta = json.loads((ROOT / "data/pilot/annotations/metadata.json").read_text())
+    accs = sorted(p.stem for p in MP.glob("*.npz"))
+    head = np.load(MP / f"{accs[0]}.npz", allow_pickle=True)
+    ci = {str(c): i for i, c in enumerate(head["conditions"])}
+    layers = [int(l) for l in head["layers"]]
+    A = np.stack([np.load(MP / f"{a}.npz", allow_pickle=True)["mean_pool"]
+                  for a in accs]).astype(np.float64)
+    A = A - A.mean(axis=0, keepdims=True)
+
+    phys = ["sequence", "structure", "ss8", "sasa"]
+    align = np.zeros(len(accs))
+    for L in (32, 40, 47):
+        li = layers.index(L)
+        f = A[:, ci["function"], li, :]
+        p = A[:, [ci[c] for c in phys], li, :].mean(axis=1)
+        fn = f / (np.linalg.norm(f, axis=1, keepdims=True) + 1e-8)
+        pn = p / (np.linalg.norm(p, axis=1, keepdims=True) + 1e-8)
+        align += (fn * pn).sum(1)
+    align /= 3.0
+
+    n_ipr = np.array([len(meta[a].get("interpro") or []) for a in accs])
+    ec = np.array([int(e[0].split(".")[0]) if (e := meta[a].get("ec_numbers"))
+                   and e[0].split(".")[0].isdigit() else 0 for a in accs])
+    keep = np.isin(ec, [1, 2, 3])
+    Xs = A[keep, ci["structure"], layers.index(40), :]
+    y = ec[keep].astype(str)
+    pipe = make_pipeline(StandardScaler(), PCA(50, random_state=0),
+                         LogisticRegression(max_iter=2000))
+    pred = cross_val_predict(pipe, Xs, y,
+                             cv=StratifiedKFold(5, shuffle=True, random_state=0))
+    correct = pred == y
+    a_red, a_non = align[keep][correct], align[keep][~correct]
+    _, p_mw = mannwhitneyu(a_non, a_red, alternative="greater")
+    r_ipr, _ = spearmanr(align, n_ipr)
+
+    fig, (axA, axB) = plt.subplots(1, 2, figsize=(8.0, 3.3))
+    bx = axA.boxplot([a_red, a_non], widths=0.5, showfliers=False,
+                     patch_artist=True,
+                     labels=[f"redundant\n(structure decodes EC)\nn={len(a_red)}",
+                             f"non-redundant\n(structure fails)\nn={len(a_non)}"])
+    for b in bx["boxes"]:
+        b.set(facecolor="#e2e8f0", edgecolor=INK)
+    for med in bx["medians"]:
+        med.set(color=INK)
+    axA.axhline(0, ls=":", color="0.6", lw=1)
+    axA.set_ylabel("function-physical alignment (deep layers)")
+    axA.set_title(f"alignment by redundancy ($p$={p_mw:.2f})")
+
+    axB.scatter(n_ipr, align, s=6, alpha=0.3, color=INK, edgecolors="none")
+    axB.axhline(0, ls=":", color="0.6", lw=1)
+    axB.set_xlabel("InterPro domain count")
+    axB.set_ylabel("function-physical alignment")
+    axB.set_title(f"alignment by characterisation ($r$={r_ipr:+.2f})")
+    fig.tight_layout()
+    fig.text(0.02, 0.97, "a", fontsize=12, fontweight="bold", color=INK, va="top")
+    fig.text(0.52, 0.97, "b", fontsize=12, fontweight="bold", color=INK, va="top")
+    fig.savefig(OUT / "figureS8.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS8.png")
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
-    figS1(); figS2(); figS3(); figS4(); figS5(); figS6(); figS7()
+    figS1(); figS2(); figS3(); figS4(); figS5(); figS6(); figS7(); figS8()

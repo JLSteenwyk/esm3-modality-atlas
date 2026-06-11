@@ -171,6 +171,23 @@ while holding discrete functional labels on a separate axis. The depth-locked
 universality across the tree of life indicates that this organisation is intrinsic to
 the trained model rather than a property of any particular proteome.
 
+One mechanism that could keep functional annotation orthogonal is redundancy. Enzyme
+class is decodable from the structure-derived representation, so the network may already
+recover function from the physical modalities and face little pressure to integrate the
+explicit functional channel. This account predicts that the function channel should
+align more closely with the physical subspace for proteins whose function is not
+recoverable from structure. The prediction fails (Figure S8). Per-protein alignment
+between the function vector and the physical subspace is near zero for every protein,
+with a mean of 0.0005 and a standard deviation of 0.15, and it does not track
+redundancy. Proteins for which the structure representation misclassifies enzyme class
+align no more strongly than proteins it classifies correctly, with means of 0.014 and
+0.006 and a Mann-Whitney p of 0.35, and alignment is flat against both the number of
+InterPro domains, with a Spearman correlation of -0.02, and the number of gene-ontology
+terms, with a Spearman correlation of 0.09. Functional annotation therefore stays
+orthogonal whether or not it is redundant with the physical modalities, which points
+away from redundancy and toward a categorical organisation in which discrete functional
+labels are held on a separate axis irrespective of their recoverability from structure.
+
 ## 5. Limitations
 
 Several limitations bound these conclusions. Only one model was studied, because

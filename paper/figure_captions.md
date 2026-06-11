@@ -98,3 +98,15 @@ intermixed rather than separated. (b) Across depth, condition separation by moda
 (silhouette, reaching 0.42 at layer 24) far exceeds separation by superkingdom, which
 stays near 0 at every layer (peaking at only 0.08 at layer 33). ESM3 therefore
 represents proteins by their biochemistry rather than their taxonomy.
+
+**Figure S8. Function orthogonality does not reflect redundancy.** Per-protein
+alignment is the cosine between a protein's function vector and its mean physical
+vector, averaged over layers 32, 40, and 47, after centring each condition. If
+function stayed orthogonal only because it is recoverable from the physical
+modalities, alignment should be higher for proteins whose function is not recoverable.
+(a) Proteins split by whether the structure-derived representation correctly decodes
+enzyme class. The non-redundant group, for which structure fails, aligns no more than
+the redundant group (medians near 0, Mann-Whitney p = 0.35). (b) Alignment against
+InterPro domain count shows no trend (Spearman r = -0.02). Alignment is near zero for
+every protein regardless of redundancy, which favours a categorical account of the
+functional channel over a redundancy account.
