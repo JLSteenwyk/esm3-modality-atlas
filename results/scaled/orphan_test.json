@@ -1,0 +1,28 @@
+{
+  "n": 892,
+  "deep_layers": [
+    32,
+    40,
+    47
+  ],
+  "alignment_mean": 0.00047517083787306153,
+  "alignment_sd": 0.14975694510211732,
+  "primary_structure_decodes_EC": {
+    "n_ec": 309,
+    "n_redundant_correct": 238,
+    "n_nonredundant_wrong": 71,
+    "align_redundant_mean": 0.006376276718094442,
+    "align_nonredundant_mean": 0.013752429946860198,
+    "mannwhitney_p_nonred_gt_red": 0.34780678588565
+  },
+  "secondary": {
+    "spearman_align_vs_interpro_count": [
+      -0.015609223133983503,
+      0.6415265669214782
+    ],
+    "spearman_align_vs_go_count": [
+      0.08623880504800074,
+      0.009971091080026919
+    ]
+  }
+}
