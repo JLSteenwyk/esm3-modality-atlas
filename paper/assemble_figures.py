@@ -68,9 +68,9 @@ def figure1():
            for i in range(3)]
     nrow = len(views)
 
-    fig = plt.figure(figsize=(7.2, 1.45 * nrow + 2.6))
-    gs = gridspec.GridSpec(nrow + 1, len(snaps),
-                           height_ratios=[1] * nrow + [1.7],
+    fig = plt.figure(figsize=(7.2, 1.45 * nrow + 2.8))
+    gs = gridspec.GridSpec(nrow + 2, len(snaps),
+                           height_ratios=[1] * nrow + [0.35, 1.7],
                            hspace=0.12, wspace=0.04)
     for r, (el, az) in enumerate(views):
         for j, L in enumerate(snaps):
@@ -94,10 +94,18 @@ def figure1():
     fig.text(0.065, 0.985, "a", fontsize=12, fontweight="bold", color=INK,
              va="top")
 
+    # modality colour key for panel a, in its own row directly below the snapshots
+    handles = [plt.Line2D([0], [0], marker="o", ls="", ms=5,
+               mfc=CONDITION_COLOR[k], mec="none", label=CONDITION_LABEL[k])
+               for k in CONDITIONS]
+    ax_key = fig.add_subplot(gs[nrow, :]); ax_key.axis("off")
+    ax_key.legend(handles=handles, loc="center", ncol=6, frameon=False,
+                  fontsize=8, handletextpad=0.4, columnspacing=1.4)
+
     # panel b — fusion curve (dual axis; line identity given by the coloured axes)
     m = jload("scaled/metrics.json")["series"]
     x = np.array(m["layers"])
-    axb = fig.add_subplot(gs[nrow, :])
+    axb = fig.add_subplot(gs[nrow + 1, :])
     axb.plot(x, m["silhouette"], "-o", color=SEQc, ms=2.5, lw=1.6)
     axb2 = axb.twinx()
     axb2.plot(x, m["integration_index"], "-s", color=INK, ms=2.5, lw=1.6)
@@ -110,13 +118,6 @@ def figure1():
     axb.set_xticks(range(0, 48, 4))
     axb2.spines["top"].set_visible(False)
     panel(axb, "b", dx=-0.085, dy=1.12)
-
-    # modality colour key, one row at the very bottom
-    handles = [plt.Line2D([0], [0], marker="o", ls="", ms=5,
-               mfc=CONDITION_COLOR[k], mec="none", label=CONDITION_LABEL[k])
-               for k in CONDITIONS]
-    fig.legend(handles=handles, loc="lower center", ncol=6, frameon=False,
-               bbox_to_anchor=(0.5, -0.03), fontsize=8)
     fig.savefig(OUT / "figure1.png", bbox_inches="tight")
     plt.close(fig)
     print("wrote figure1.png")
