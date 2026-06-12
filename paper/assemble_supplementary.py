@@ -39,9 +39,14 @@ def jload(p):
     return json.loads((R / p).read_text())
 
 
-def panel(ax, letter, dx=-0.12, dy=1.07):
-    ax.text(dx, dy, letter, transform=ax.transAxes, fontsize=12,
-            fontweight="bold", va="top", ha="right", color=INK)
+def panel(ax, letter, dx=-24, dy=6):
+    """Panel letter anchored to the axes' top-left corner with a fixed point
+    offset, so it sits in a consistent outer corner regardless of titles, axis
+    labels, or layout (dx, dy are offsets in points)."""
+    ax.annotate(letter, xy=(0, 1), xycoords="axes fraction",
+                xytext=(dx, dy), textcoords="offset points", fontsize=12,
+                fontweight="bold", va="bottom", ha="right", color=INK,
+                annotation_clip=False)
 
 
 def below(ax, ncol=2, y=-0.30, fontsize=7):
@@ -189,7 +194,7 @@ def figS6():
     axA.barh(range(len(orgs)), [cnt[o] for o in orgs],
              color=[kcol[o2k[o]] for o in orgs], edgecolor="none")
     axA.set_yticks(range(len(orgs))); axA.set_yticklabels(orgs, fontsize=7)
-    axA.set_xlabel("proteins curated"); panel(axA, "a", dx=-0.34)
+    axA.set_xlabel("proteins curated"); panel(axA, "a")
     for ki, king in enumerate(["eukaryota", "bacteria", "archaea"]):
         axB.hist(lens[king], bins=30, color=kcol[king], alpha=0.55,
                  label=f"{king} (n={len(lens[king])})")
@@ -317,9 +322,8 @@ def figS8():
     axB.set_xlabel("InterPro domain count")
     axB.set_ylabel("function-physical alignment")
     axB.set_title(f"alignment by characterisation ($r$={r_ipr:+.2f})")
+    panel(axA, "a"); panel(axB, "b")
     fig.tight_layout()
-    fig.text(0.02, 0.97, "a", fontsize=12, fontweight="bold", color=INK, va="top")
-    fig.text(0.52, 0.97, "b", fontsize=12, fontweight="bold", color=INK, va="top")
     fig.savefig(OUT / "figureS8.png", bbox_inches="tight")
     plt.close(fig); print("wrote figureS8.png")
 

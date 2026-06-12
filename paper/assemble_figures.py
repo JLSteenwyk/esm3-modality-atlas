@@ -35,9 +35,14 @@ plt.rcParams.update({
 SEQc = CONDITION_COLOR["sequence"]
 
 
-def panel(ax, letter, dx=-0.10, dy=1.06):
-    ax.text(dx, dy, letter, transform=ax.transAxes, fontsize=12,
-            fontweight="bold", va="top", ha="right", color=INK)
+def panel(ax, letter, dx=-24, dy=6):
+    """Panel letter anchored to the axes' top-left corner with a fixed point
+    offset, so it sits in a consistent outer corner regardless of titles, axis
+    labels, or layout (dx, dy are offsets in points)."""
+    ax.annotate(letter, xy=(0, 1), xycoords="axes fraction",
+                xytext=(dx, dy), textcoords="offset points", fontsize=12,
+                fontweight="bold", va="bottom", ha="right", color=INK,
+                annotation_clip=False)
 
 
 def below(ax, ncol=2, y=-0.32, handles=None, labels=None):
@@ -117,7 +122,7 @@ def figure1():
     axb.axvspan(25, 35, color="0.85", alpha=0.5, zorder=0)
     axb.set_xticks(range(0, 48, 4))
     axb2.spines["top"].set_visible(False)
-    panel(axb, "b", dx=-0.085, dy=1.12)
+    panel(axb, "b")
     fig.savefig(OUT / "figure1.png", bbox_inches="tight")
     plt.close(fig)
     print("wrote figure1.png")
@@ -151,7 +156,7 @@ def figure2():
         s.set_visible(False)
     cb = fig.colorbar(im, ax=axa, fraction=0.025, pad=0.02)
     cb.set_label("linear CKA", fontsize=7)
-    panel(axa, "a", dx=-0.16, dy=1.08)
+    panel(axa, "a")
 
     rc = jload("scaled/residue_annotation_compare.json")["series"]
     rl = jload("scaled/residue_annotation_compare.json")["layers"]
@@ -166,7 +171,7 @@ def figure2():
     axb.set_xlabel("layer"); axb.set_ylabel("linear CKA"); axb.set_ylim(-0.03, 1.0)
     axb.set_xticks(range(0, 48, 4))
     below(axb, ncol=3, y=-0.30)
-    panel(axb, "b", dx=-0.09, dy=1.08)
+    panel(axb, "b")
     fig.savefig(OUT / "figure2.png", bbox_inches="tight")
     plt.close(fig)
     print("wrote figure2.png")
@@ -226,7 +231,7 @@ def figure4():
              edgecolor="none", height=0.7)
     axA.set_yticks(range(len(order))); axA.set_yticklabels(order, fontsize=7)
     axA.set_xlabel("fusion-onset layer"); axA.set_xlim(20, 30)
-    panel(axA, "a", dx=-0.32)
+    panel(axA, "a")
 
     s = jload("diverse/stratified.json")
     x = np.array(s["layers"])
