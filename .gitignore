@@ -15,3 +15,9 @@ figures/scaled/embed/
 # diverse multi-organism dataset (regenerable)
 data/diverse/
 figures/diverse/embed/
+
+# compiled LaTeX (regenerate with paper/build.sh)
+paper/*.pdf
+paper/*.aux
+paper/*.log
+paper/*.out
