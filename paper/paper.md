@@ -34,7 +34,10 @@ structure. Each input modality has its own embedding table, and the per-residue
 embeddings are summed before the transformer trunk. This architecture raises a
 mechanistic question. The modalities may be kept in separate parts of the
 representation, or the network may blend them, and if it blends them, the depth at
-which it does so is unknown.
+which it does so is unknown. Prior interpretability work on protein language models
+has examined attention heads and learned features, but how the several input
+modalities of a multimodal model are organised geometrically across depth has not
+been characterised.
 
 The present analysis takes a geometry-first, descriptive approach. For each protein,
 ESM3 runs once per modality in isolation, with all other modalities masked, together
@@ -43,8 +46,14 @@ The resulting collection of per-(protein, modality, layer) representations forms
 atlas of how multimodal information is organised across depth. Standard
 representational-geometry tools, namely silhouette score, linear CKA, effective rank,
 and linear probes, characterise the atlas, supported by several controls. This work
-is the first stage of a larger program; causal steering, sparse-autoencoder
-dictionaries, and cross-architecture comparison are handled in companion work.
+is the first stage of a larger program. A companion study applies sparse autoencoders
+to ESM3 and ESM2 and, among other results, reports that the sequence and
+sequence-plus-structure representations of ESM3 converge between layers 28 and 38. The
+present analysis extends that two-condition observation to a full multimodal atlas,
+characterising the ordered fusion of the four physical modalities, the persistent
+orthogonality of the functional channel, the universality of the pattern across the
+tree of life, and a battery of controls; causal steering and sparse-autoencoder
+dictionaries are developed in that companion work.
 
 ## 2. Methods
 

@@ -48,12 +48,15 @@ peak modality fusion at the same network depth (layer 35).
 
 \section{Introduction}
 
-Multimodal protein language models such as ESM3 reason jointly over sequence and
-structure. Each input modality has its own embedding table, and the per-residue
-embeddings are summed before the transformer trunk. This architecture raises a
-mechanistic question. The modalities may be kept in separate parts of the
+Multimodal protein language models such as ESM3 \cite{hayes2024} reason jointly over
+sequence and structure. Each input modality has its own embedding table, and the
+per-residue embeddings are summed before the transformer trunk. This architecture
+raises a mechanistic question. The modalities may be kept in separate parts of the
 representation, or the network may blend them, and if it blends them, the depth at
-which it does so is unknown.
+which it does so is unknown. Prior interpretability work on protein language models
+has examined attention heads and learned features \cite{vig2021,rao2019,gujral2024,
+cunningham2023}, but how the several input modalities of a multimodal model are
+organised geometrically across depth has not been characterised.
 
 The present analysis takes a geometry-first, descriptive approach. For each
 protein, ESM3 runs once per modality in isolation, with all other modalities
@@ -62,40 +65,51 @@ out at every layer. The resulting collection of per-(protein, modality, layer)
 representations forms an atlas of how multimodal information is organised across
 depth. Standard representational-geometry tools, namely silhouette score, linear
 CKA, effective rank, and linear probes, characterise the atlas, supported by
-several controls. This work is the first stage of a larger program; causal
-steering, sparse-autoencoder dictionaries, and cross-architecture comparison are
-handled in companion work.
+several controls. This work is the first stage of a larger program. A companion
+study \cite{steenwyk_companion} applies sparse autoencoders to ESM3 and ESM2 and,
+among other results, reports that the sequence and sequence-plus-structure
+representations of ESM3 converge between layers 28 and 38. The present analysis
+extends that two-condition observation to a full multimodal atlas, characterising
+the ordered fusion of the four physical modalities, the persistent orthogonality of
+the functional channel, the universality of the pattern across the tree of life, and
+a battery of controls; causal steering and sparse-autoencoder dictionaries are
+developed in that companion work.
 
 \section{Methods}
 
 \paragraph{Model and modalities.} The model is \texttt{esm3-sm-open-v1}
-(1.4 billion parameters, 48 transformer blocks, model dimension 1536). Six
-conditions are studied, comprising five single-modality inputs (sequence,
+\cite{hayes2024} (1.4 billion parameters, 48 transformer blocks, model dimension
+1536). Six conditions are studied, comprising five single-modality inputs (sequence,
 structure, SS8, SASA, and function) and an all-modalities condition in which every
 modality is supplied jointly. Structure is provided as vector-quantised structure
-tokens derived from coordinates, SS8 and SASA are computed by DSSP from the
-structure, and function is provided as whole-protein InterPro annotations filtered
+tokens derived from coordinates, SS8 is computed by DSSP \cite{kabsch1983} and SASA
+by the Shrake--Rupley algorithm \cite{shrake1973} from the structure, and function
+is provided as whole-protein InterPro annotations \cite{paysanlafosse2023} filtered
 to the 29{,}026-entry vocabulary of the ESM3 function tokeniser.
 
 \paragraph{Datasets.} Three datasets were used, namely a 199-protein human pilot
 for development, an 892-protein human set for the main results, and a 5,984-protein
 set drawn from 12 organisms spanning eukaryota, bacteria, and archaea for the
-universality test. Structures are AlphaFold-DB models of a single release, SS8 and
-SASA are computed with DSSP (mkdssp 4.6.1, via ESM's \texttt{ProteinChain}), and
-InterPro and Gene Ontology annotations are taken from UniProt.
+universality test. Structures are AlphaFold-DB models of a single release
+\cite{jumper2021,varadi2022}, SS8 and SASA are computed with DSSP (mkdssp 4.6.1, via
+ESM's \texttt{ProteinChain}) \cite{kabsch1983}, and InterPro and Gene Ontology
+annotations are taken from UniProt \cite{uniprot2023,paysanlafosse2023}. A
+fourth dataset of 168 proteins backed by experimental (X-ray and cryo-EM) structures
+from the RCSB replicates the main result with non-predicted coordinates.
 
 \paragraph{Harvesting.} For each (protein, condition) pair, ESM3 runs one forward
 pass and the residual stream is cached at all 48 layers, mean-pooled over residues
 with the special tokens excluded. A 100-protein subset additionally stores
 per-residue activations at seven layers for the pooling control.
 
-\paragraph{Metrics.} Each layer is summarised by the silhouette score of the
-conditions (Euclidean, in the full 1536-dimensional space), by the linear CKA of
-Kornblith et al. between every protein-aligned condition pair, by an integration
-index defined as the mean pairwise CKA, by the effective rank computed as the
-exponential of the entropy of the covariance eigenspectrum for the whole cloud and
-for each condition, and by a protein-grouped five-fold logistic probe of modality
-identity evaluated both in the full space and in the top-3 PCA geometry.
+\paragraph{Metrics.} Each layer is summarised by the silhouette score
+\cite{rousseeuw1987} of the conditions (Euclidean, in the full 1536-dimensional
+space), by the linear CKA of Kornblith et al. \cite{kornblith2019} between every
+protein-aligned condition pair, by an integration index defined as the mean pairwise
+CKA, by the effective rank \cite{roy2007} computed as the exponential of the entropy
+of the covariance eigenspectrum for the whole cloud and for each condition, and by a
+protein-grouped five-fold logistic probe of modality identity evaluated both in the
+full space and in the top-3 PCA geometry.
 Visualisations use PCA, fit per layer and in a shared basis across layers.
 
 \paragraph{Controls.} The controls comprise a randomly initialised model whose
@@ -304,8 +318,8 @@ separate axis irrespective of their recoverability from structure.
 
 Several limitations bound these conclusions. Only one model was studied, because
 \texttt{esm3-sm-open-v1} is the sole openly available multimodal ESM3, larger ESM3
-models are reachable only through a gated interface, and the ESM2 family is
-sequence-only and cannot support the experiment. Whether the fractional fusion depth
+models are reachable only through a gated interface, and the ESM2 family
+\cite{lin2023} is sequence-only and cannot support the experiment. Whether the fractional fusion depth
 scales with model capacity therefore remains open. All structures are AlphaFold
 predictions; although the disorder effect is uncorrelated with prediction confidence
 and so is not an artifact of it, a replication on experimental structures would
@@ -319,5 +333,8 @@ The full pipeline is scripted and configuration-driven, covering curation, struc
 retrieval, DSSP annotation, activation harvesting, aggregation, the metric and
 control analyses, and figure assembly. Colours follow the colorblind-safe
 \texttt{pypubfigs} palette.
+
+\bibliographystyle{unsrt}
+\bibliography{references}
 
 \end{document}
