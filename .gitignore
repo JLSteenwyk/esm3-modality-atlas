@@ -21,3 +21,4 @@ paper/*.pdf
 paper/*.aux
 paper/*.log
 paper/*.out
+data/experimental/

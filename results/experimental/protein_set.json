@@ -1,0 +1,887 @@
+{
+ "A1L190": {
+  "source_pdb": "6H86",
+  "length": 76,
+  "category": "small_proteins"
+ },
+ "A1L3X0": {
+  "source_pdb": "6Y7F",
+  "length": 254,
+  "category": "enzymes_medium"
+ },
+ "O00168": {
+  "source_pdb": "2JO1",
+  "length": 72,
+  "category": "structural_proteins"
+ },
+ "O00214": {
+  "source_pdb": "3AP4",
+  "length": 146,
+  "category": "diverse_medium"
+ },
+ "O00422": {
+  "source_pdb": "2HDE",
+  "length": 148,
+  "category": "diverse_medium"
+ },
+ "O00560": {
+  "source_pdb": "1OBX",
+  "length": 74,
+  "category": "diverse_medium"
+ },
+ "O00746": {
+  "source_pdb": "1EHW",
+  "length": 143,
+  "category": "enzymes_short"
+ },
+ "O00762": {
+  "source_pdb": "1I7K",
+  "length": 146,
+  "category": "enzymes_short"
+ },
+ "O00764": {
+  "source_pdb": "2F7K",
+  "length": 323,
+  "category": "binding_proteins"
+ },
+ "O14618": {
+  "source_pdb": "1DO5",
+  "length": 154,
+  "category": "diverse_medium"
+ },
+ "O14625": {
+  "source_pdb": "1RJT",
+  "length": 73,
+  "category": "small_proteins"
+ },
+ "O14656": {
+  "source_pdb": "5J1S",
+  "length": 277,
+  "category": "binding_proteins"
+ },
+ "O14744": {
+  "source_pdb": "4GQB",
+  "length": 625,
+  "category": "enzymes_long"
+ },
+ "O14763": {
+  "source_pdb": "1D0G",
+  "length": 108,
+  "category": "structural_proteins"
+ },
+ "O14788": {
+  "source_pdb": "3URF",
+  "length": 156,
+  "category": "receptors"
+ },
+ "O14862": {
+  "source_pdb": "3RN2",
+  "length": 194,
+  "category": "dna_binding"
+ },
+ "O14907": {
+  "source_pdb": "2KG2",
+  "length": 124,
+  "category": "diverse_medium"
+ },
+ "O14933": {
+  "source_pdb": "1WZV",
+  "length": 150,
+  "category": "enzymes_short"
+ },
+ "O14949": {
+  "source_pdb": "5XTE",
+  "length": 81,
+  "category": "small_proteins"
+ },
+ "O14958": {
+  "source_pdb": "2VAF",
+  "length": 349,
+  "category": "structural_proteins"
+ },
+ "O14960": {
+  "source_pdb": "5B0H",
+  "length": 133,
+  "category": "structural_proteins"
+ },
+ "O14979": {
+  "source_pdb": "7ZIR",
+  "length": 51,
+  "category": "diverse_medium"
+ },
+ "O15111": {
+  "source_pdb": "5EBZ",
+  "length": 655,
+  "category": "enzymes_long"
+ },
+ "O15247": {
+  "source_pdb": "2R5G",
+  "length": 237,
+  "category": "enzymes_medium"
+ },
+ "O15269": {
+  "source_pdb": "6M4O",
+  "length": 420,
+  "category": "enzymes_long"
+ },
+ "O15520": {
+  "source_pdb": "1NUN",
+  "length": 139,
+  "category": "structural_proteins"
+ },
+ "O15540": {
+  "source_pdb": "1FDQ",
+  "length": 131,
+  "category": "transporters"
+ },
+ "O43143": {
+  "source_pdb": "5XDR",
+  "length": 679,
+  "category": "enzymes_long"
+ },
+ "O43323": {
+  "source_pdb": "3N1G",
+  "length": 151,
+  "category": "enzymes_medium"
+ },
+ "O43447": {
+  "source_pdb": "1MZW",
+  "length": 173,
+  "category": "enzymes_short"
+ },
+ "O43603": {
+  "source_pdb": "7XBD",
+  "length": 277,
+  "category": "receptors"
+ },
+ "O43678": {
+  "source_pdb": "1S3A",
+  "length": 85,
+  "category": "small_proteins"
+ },
+ "O43763": {
+  "source_pdb": "3A03",
+  "length": 53,
+  "category": "dna_binding"
+ },
+ "O43866": {
+  "source_pdb": "8R83",
+  "length": 216,
+  "category": "structural_proteins"
+ },
+ "O60235": {
+  "source_pdb": "9DPF",
+  "length": 232,
+  "category": "enzymes_long"
+ },
+ "O60678": {
+  "source_pdb": "2FYT",
+  "length": 311,
+  "category": "enzymes_long"
+ },
+ "O60729": {
+  "source_pdb": "1OHD",
+  "length": 338,
+  "category": "enzymes_long"
+ },
+ "O60759": {
+  "source_pdb": "2Z17",
+  "length": 94,
+  "category": "diverse_medium"
+ },
+ "O60760": {
+  "source_pdb": "1IYH",
+  "length": 198,
+  "category": "enzymes_short"
+ },
+ "O60784": {
+  "source_pdb": "1ELK",
+  "length": 153,
+  "category": "transporters"
+ },
+ "O60882": {
+  "source_pdb": "2JSD",
+  "length": 160,
+  "category": "enzymes_long"
+ },
+ "O60884": {
+  "source_pdb": "7ZHS",
+  "length": 242,
+  "category": "diverse_medium"
+ },
+ "O60939": {
+  "source_pdb": "5FDY",
+  "length": 123,
+  "category": "transporters"
+ },
+ "O75191": {
+  "source_pdb": "4BC5",
+  "length": 524,
+  "category": "enzymes_long"
+ },
+ "O75223": {
+  "source_pdb": "2PN7",
+  "length": 169,
+  "category": "enzymes_short"
+ },
+ "O75319": {
+  "source_pdb": "4JMJ",
+  "length": 181,
+  "category": "enzymes_medium"
+ },
+ "O75324": {
+  "source_pdb": "1ZZA",
+  "length": 90,
+  "category": "small_proteins"
+ },
+ "O75351": {
+  "source_pdb": "1XWI",
+  "length": 322,
+  "category": "binding_proteins"
+ },
+ "O75365": {
+  "source_pdb": "1V3A",
+  "length": 162,
+  "category": "enzymes_short"
+ },
+ "O75367": {
+  "source_pdb": "1ZR3",
+  "length": 186,
+  "category": "dna_binding"
+ },
+ "O75390": {
+  "source_pdb": "5UZP",
+  "length": 436,
+  "category": "enzymes_long"
+ },
+ "O75554": {
+  "source_pdb": "2JXW",
+  "length": 75,
+  "category": "diverse_medium"
+ },
+ "O75594": {
+  "source_pdb": "1YCK",
+  "length": 167,
+  "category": "structural_proteins"
+ },
+ "O75771": {
+  "source_pdb": "2KZ3",
+  "length": 83,
+  "category": "binding_proteins"
+ },
+ "O75828": {
+  "source_pdb": "2HRB",
+  "length": 273,
+  "category": "enzymes_medium"
+ },
+ "O75838": {
+  "source_pdb": "8XOQ",
+  "length": 239,
+  "category": "diverse_medium"
+ },
+ "O75884": {
+  "source_pdb": "9FCR",
+  "length": 184,
+  "category": "enzymes_short"
+ },
+ "O75897": {
+  "source_pdb": "2GWH",
+  "length": 285,
+  "category": "enzymes_medium"
+ },
+ "O75956": {
+  "source_pdb": "2M1L",
+  "length": 69,
+  "category": "diverse_medium"
+ },
+ "O76075": {
+  "source_pdb": "1IBX",
+  "length": 81,
+  "category": "enzymes_medium"
+ },
+ "O76093": {
+  "source_pdb": "4CJM",
+  "length": 129,
+  "category": "structural_proteins"
+ },
+ "O95154": {
+  "source_pdb": "2CLP",
+  "length": 323,
+  "category": "enzymes_medium"
+ },
+ "O95361": {
+  "source_pdb": "7QS3",
+  "length": 193,
+  "category": "enzymes_long"
+ },
+ "O95363": {
+  "source_pdb": "3CMQ",
+  "length": 405,
+  "category": "binding_proteins"
+ },
+ "O95393": {
+  "source_pdb": "7POI",
+  "length": 104,
+  "category": "structural_proteins"
+ },
+ "O95429": {
+  "source_pdb": "1M62",
+  "length": 87,
+  "category": "diverse_medium"
+ },
+ "O95497": {
+  "source_pdb": "4CYG",
+  "length": 463,
+  "category": "enzymes_long"
+ },
+ "O95571": {
+  "source_pdb": "4CHL",
+  "length": 233,
+  "category": "enzymes_medium"
+ },
+ "O95630": {
+  "source_pdb": "2XZE",
+  "length": 141,
+  "category": "enzymes_long"
+ },
+ "O95750": {
+  "source_pdb": "2P23",
+  "length": 136,
+  "category": "structural_proteins"
+ },
+ "O95843": {
+  "source_pdb": "2GGZ",
+  "length": 165,
+  "category": "diverse_medium"
+ },
+ "O95944": {
+  "source_pdb": "1HKF",
+  "length": 108,
+  "category": "structural_proteins"
+ },
+ "P00338": {
+  "source_pdb": "1I10",
+  "length": 331,
+  "category": "enzymes_medium"
+ },
+ "P00374": {
+  "source_pdb": "1BOZ",
+  "length": 186,
+  "category": "enzymes_short"
+ },
+ "P00441": {
+  "source_pdb": "1AZV",
+  "length": 153,
+  "category": "enzymes_short"
+ },
+ "P00480": {
+  "source_pdb": "1C9Y",
+  "length": 321,
+  "category": "enzymes_medium"
+ },
+ "P00505": {
+  "source_pdb": "5AX8",
+  "length": 401,
+  "category": "enzymes_long"
+ },
+ "P00568": {
+  "source_pdb": "1Z83",
+  "length": 195,
+  "category": "enzymes_short"
+ },
+ "P01011": {
+  "source_pdb": "1AS4",
+  "length": 336,
+  "category": "structural_proteins"
+ },
+ "P01579": {
+  "source_pdb": "1FG9",
+  "length": 127,
+  "category": "structural_proteins"
+ },
+ "P01732": {
+  "source_pdb": "1CD8",
+  "length": 114,
+  "category": "structural_proteins"
+ },
+ "P01909": {
+  "source_pdb": "1S9V",
+  "length": 179,
+  "category": "structural_proteins"
+ },
+ "P02511": {
+  "source_pdb": "2KLR",
+  "length": 82,
+  "category": "diverse_medium"
+ },
+ "P02649": {
+  "source_pdb": "1BZ4",
+  "length": 144,
+  "category": "transporters"
+ },
+ "P02654": {
+  "source_pdb": "1IOJ",
+  "length": 57,
+  "category": "small_proteins"
+ },
+ "P02656": {
+  "source_pdb": "2JQ3",
+  "length": 79,
+  "category": "small_proteins"
+ },
+ "P02743": {
+  "source_pdb": "1GYK",
+  "length": 204,
+  "category": "structural_proteins"
+ },
+ "P02745": {
+  "source_pdb": "1PK6",
+  "length": 133,
+  "category": "structural_proteins"
+ },
+ "P02774": {
+  "source_pdb": "1KW2",
+  "length": 455,
+  "category": "transporters"
+ },
+ "P02776": {
+  "source_pdb": "1F9Q",
+  "length": 64,
+  "category": "structural_proteins"
+ },
+ "P03951": {
+  "source_pdb": "1XX9",
+  "length": 237,
+  "category": "enzymes_long"
+ },
+ "P03956": {
+  "source_pdb": "1AYK",
+  "length": 169,
+  "category": "enzymes_long"
+ },
+ "P04062": {
+  "source_pdb": "1OGS",
+  "length": 497,
+  "category": "enzymes_long"
+ },
+ "P04080": {
+  "source_pdb": "2OCT",
+  "length": 97,
+  "category": "small_proteins"
+ },
+ "P04155": {
+  "source_pdb": "1HI7",
+  "length": 60,
+  "category": "structural_proteins"
+ },
+ "P04180": {
+  "source_pdb": "4X96",
+  "length": 375,
+  "category": "enzymes_long"
+ },
+ "P04406": {
+  "source_pdb": "1U8F",
+  "length": 333,
+  "category": "enzymes_medium"
+ },
+ "P05109": {
+  "source_pdb": "1MR8",
+  "length": 90,
+  "category": "small_proteins"
+ },
+ "P05177": {
+  "source_pdb": "2HI4",
+  "length": 480,
+  "category": "enzymes_long"
+ },
+ "P05386": {
+  "source_pdb": "2LBF",
+  "length": 69,
+  "category": "diverse_medium"
+ },
+ "P06126": {
+  "source_pdb": "1ONQ",
+  "length": 274,
+  "category": "structural_proteins"
+ },
+ "P06703": {
+  "source_pdb": "1K96",
+  "length": 89,
+  "category": "small_proteins"
+ },
+ "P06865": {
+  "source_pdb": "2GK1",
+  "length": 52,
+  "category": "enzymes_long"
+ },
+ "P07305": {
+  "source_pdb": "6HQ1",
+  "length": 75,
+  "category": "dna_binding"
+ },
+ "P07384": {
+  "source_pdb": "1ZCM",
+  "length": 321,
+  "category": "enzymes_long"
+ },
+ "P07737": {
+  "source_pdb": "1AWI",
+  "length": 138,
+  "category": "diverse_medium"
+ },
+ "P07910": {
+  "source_pdb": "2MXY",
+  "length": 105,
+  "category": "diverse_medium"
+ },
+ "P08253": {
+  "source_pdb": "1CXW",
+  "length": 60,
+  "category": "enzymes_long"
+ },
+ "P08620": {
+  "source_pdb": "1IJT",
+  "length": 128,
+  "category": "structural_proteins"
+ },
+ "P08670": {
+  "source_pdb": "1GK4",
+  "length": 79,
+  "category": "diverse_medium"
+ },
+ "P08865": {
+  "source_pdb": "3BCH",
+  "length": 197,
+  "category": "receptors"
+ },
+ "P08887": {
+  "source_pdb": "1N26",
+  "length": 299,
+  "category": "structural_proteins"
+ },
+ "P09038": {
+  "source_pdb": "1BAS",
+  "length": 125,
+  "category": "diverse_medium"
+ },
+ "P09086": {
+  "source_pdb": "1HDP",
+  "length": 63,
+  "category": "diverse_medium"
+ },
+ "P09466": {
+  "source_pdb": "4R0B",
+  "length": 153,
+  "category": "structural_proteins"
+ },
+ "P09525": {
+  "source_pdb": "2ZOC",
+  "length": 319,
+  "category": "diverse_medium"
+ },
+ "P09668": {
+  "source_pdb": "6CZS",
+  "length": 312,
+  "category": "enzymes_medium"
+ },
+ "P09758": {
+  "source_pdb": "7E5M",
+  "length": 236,
+  "category": "structural_proteins"
+ },
+ "P09769": {
+  "source_pdb": "7UY0",
+  "length": 447,
+  "category": "enzymes_long"
+ },
+ "P09914": {
+  "source_pdb": "5UDI",
+  "length": 460,
+  "category": "diverse_medium"
+ },
+ "P09936": {
+  "source_pdb": "2ETL",
+  "length": 223,
+  "category": "enzymes_medium"
+ },
+ "P0C7P0": {
+  "source_pdb": "6AVJ",
+  "length": 92,
+  "category": "diverse_medium"
+ },
+ "P0C870": {
+  "source_pdb": "5NFN",
+  "length": 317,
+  "category": "enzymes_medium"
+ },
+ "P10114": {
+  "source_pdb": "1KAO",
+  "length": 167,
+  "category": "enzymes_short"
+ },
+ "P10145": {
+  "source_pdb": "1ICW",
+  "length": 69,
+  "category": "small_proteins"
+ },
+ "P10276": {
+  "source_pdb": "3KMR",
+  "length": 234,
+  "category": "receptors"
+ },
+ "P10619": {
+  "source_pdb": "1IVY",
+  "length": 452,
+  "category": "enzymes_long"
+ },
+ "P10632": {
+  "source_pdb": "1PQ2",
+  "length": 463,
+  "category": "enzymes_long"
+ },
+ "P10635": {
+  "source_pdb": "2F9Q",
+  "length": 454,
+  "category": "enzymes_long"
+ },
+ "P10646": {
+  "source_pdb": "1IRH",
+  "length": 61,
+  "category": "diverse_medium"
+ },
+ "P11233": {
+  "source_pdb": "1UAD",
+  "length": 173,
+  "category": "enzymes_medium"
+ },
+ "P11308": {
+  "source_pdb": "1SXE",
+  "length": 97,
+  "category": "diverse_medium"
+ },
+ "P11441": {
+  "source_pdb": "4X86",
+  "length": 51,
+  "category": "transporters"
+ },
+ "P11686": {
+  "source_pdb": "8OVI",
+  "length": 114,
+  "category": "diverse_medium"
+ },
+ "P11766": {
+  "source_pdb": "1M6H",
+  "length": 373,
+  "category": "enzymes_medium"
+ },
+ "P12277": {
+  "source_pdb": "3B6R",
+  "length": 376,
+  "category": "binding_proteins"
+ },
+ "P12532": {
+  "source_pdb": "1QK1",
+  "length": 379,
+  "category": "binding_proteins"
+ },
+ "P13236": {
+  "source_pdb": "1HUM",
+  "length": 69,
+  "category": "small_proteins"
+ },
+ "P13489": {
+  "source_pdb": "1A4Y",
+  "length": 460,
+  "category": "diverse_medium"
+ },
+ "P13686": {
+  "source_pdb": "1WAR",
+  "length": 310,
+  "category": "enzymes_medium"
+ },
+ "P13716": {
+  "source_pdb": "5HMS",
+  "length": 330,
+  "category": "enzymes_medium"
+ },
+ "P13928": {
+  "source_pdb": "1W3W",
+  "length": 311,
+  "category": "diverse_medium"
+ },
+ "P14136": {
+  "source_pdb": "6A9P",
+  "length": 103,
+  "category": "diverse_medium"
+ },
+ "P14174": {
+  "source_pdb": "1CA7",
+  "length": 114,
+  "category": "enzymes_short"
+ },
+ "P14920": {
+  "source_pdb": "2DU8",
+  "length": 340,
+  "category": "enzymes_medium"
+ },
+ "P15090": {
+  "source_pdb": "1TOU",
+  "length": 131,
+  "category": "transporters"
+ },
+ "P15104": {
+  "source_pdb": "2QC8",
+  "length": 356,
+  "category": "enzymes_medium"
+ },
+ "P15374": {
+  "source_pdb": "1XD3",
+  "length": 229,
+  "category": "enzymes_medium"
+ },
+ "P15428": {
+  "source_pdb": "8CVN",
+  "length": 256,
+  "category": "enzymes_medium"
+ },
+ "P15529": {
+  "source_pdb": "1CKL",
+  "length": 126,
+  "category": "receptors"
+ },
+ "P15531": {
+  "source_pdb": "1JXV",
+  "length": 149,
+  "category": "enzymes_short"
+ },
+ "P15735": {
+  "source_pdb": "2Y7J",
+  "length": 284,
+  "category": "binding_proteins"
+ },
+ "P16118": {
+  "source_pdb": "1K6M",
+  "length": 432,
+  "category": "binding_proteins"
+ },
+ "P16410": {
+  "source_pdb": "1AH1",
+  "length": 129,
+  "category": "diverse_medium"
+ },
+ "P17050": {
+  "source_pdb": "3H53",
+  "length": 387,
+  "category": "enzymes_long"
+ },
+ "P17405": {
+  "source_pdb": "5I81",
+  "length": 528,
+  "category": "enzymes_long"
+ },
+ "P17540": {
+  "source_pdb": "4Z9M",
+  "length": 352,
+  "category": "enzymes_long"
+ },
+ "P17643": {
+  "source_pdb": "5M8L",
+  "length": 446,
+  "category": "enzymes_long"
+ },
+ "P17676": {
+  "source_pdb": "1H88",
+  "length": 70,
+  "category": "dna_binding"
+ },
+ "P17812": {
+  "source_pdb": "5U03",
+  "length": 559,
+  "category": "enzymes_long"
+ },
+ "P17987": {
+  "source_pdb": "6NR9",
+  "length": 521,
+  "category": "enzymes_long"
+ },
+ "P18075": {
+  "source_pdb": "1BMP",
+  "length": 104,
+  "category": "diverse_medium"
+ },
+ "P18510": {
+  "source_pdb": "1ILR",
+  "length": 145,
+  "category": "diverse_medium"
+ },
+ "P18669": {
+  "source_pdb": "1YFK",
+  "length": 243,
+  "category": "enzymes_medium"
+ },
+ "P18848": {
+  "source_pdb": "1CI6",
+  "length": 56,
+  "category": "dna_binding"
+ },
+ "P19438": {
+  "source_pdb": "1EXT",
+  "length": 160,
+  "category": "receptors"
+ },
+ "P19484": {
+  "source_pdb": "7Y62",
+  "length": 74,
+  "category": "diverse_medium"
+ },
+ "P19835": {
+  "source_pdb": "1F6W",
+  "length": 533,
+  "category": "enzymes_long"
+ },
+ "P19875": {
+  "source_pdb": "1QNK",
+  "length": 69,
+  "category": "diverse_medium"
+ },
+ "P20036": {
+  "source_pdb": "3LQZ",
+  "length": 181,
+  "category": "diverse_medium"
+ },
+ "P20132": {
+  "source_pdb": "1P5J",
+  "length": 319,
+  "category": "enzymes_medium"
+ },
+ "P20292": {
+  "source_pdb": "2Q7M",
+  "length": 139,
+  "category": "diverse_medium"
+ },
+ "P20338": {
+  "source_pdb": "1YU9",
+  "length": 175,
+  "category": "enzymes_medium"
+ },
+ "P20671": {
+  "source_pdb": "6KBB",
+  "length": 83,
+  "category": "dna_binding"
+ },
+ "P21128": {
+  "source_pdb": "9FTW",
+  "length": 275,
+  "category": "enzymes_long"
+ },
+ "P21583": {
+  "source_pdb": "1EXZ",
+  "length": 133,
+  "category": "diverse_medium"
+ },
+ "P21589": {
+  "source_pdb": "4H1Y",
+  "length": 524,
+  "category": "enzymes_long"
+ }
+}

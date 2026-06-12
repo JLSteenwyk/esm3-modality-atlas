@@ -1,0 +1,26 @@
+{
+  "_comment": "Experimental-structure replication. Same conditions/layers as the scaled atlas, but structures are RCSB experimental coordinates (data/experimental) instead of AlphaFold. Mean-pool only; no per-residue.",
+
+  "dataset": {
+    "root": "data/experimental",
+    "accessions": "data/experimental/accessions.txt",
+    "structures": "data/experimental/structures",
+    "structure_annotations": "data/experimental/annotations/structure_annotations.json",
+    "metadata": "data/experimental/metadata.json"
+  },
+
+  "conditions": ["sequence", "structure", "ss8", "sasa", "function", "all"],
+
+  "layers": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+             16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+             32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47],
+
+  "pooling": {
+    "mean_pool": true,
+    "per_residue": { "enabled": false, "max_proteins": 0, "layers": [], "dtype": "float16" }
+  },
+
+  "function_modality": { "source": "interpro", "annotation_span": "whole_protein" },
+
+  "runtime": { "device": "cuda", "autocast_dtype": "bfloat16", "dssp_bin_env": "~/anaconda3/envs/dssp/bin" }
+}

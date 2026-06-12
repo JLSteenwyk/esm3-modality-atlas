@@ -82,4 +82,10 @@ not lead, a result in the main text.
 \vspace{0.6em}
 {\small\textbf{Figure S10. Withholding function barely perturbs the fused representation.} Each modality's contribution is the displacement between the all-modalities representation and the representation with that modality withheld, measured for all 892 proteins as a fraction of the all-modalities vector norm. (a) Relative displacement across depth. Withholding function (green) moves the representation far less than withholding structure, sequence, or SASA, and the gap widens with depth. (b) Per-protein relative displacement at the fusion layer 35. The function footprint, with a median of 0.021, is about six times smaller than the structure footprint, with a median of 0.12. The ss8 footprint is smaller still, but because ss8 is redundant with structure rather than orthogonal, so a small footprint marks low marginal impact, which the geometric and decoding results attribute to orthogonality in the case of function. This is causal evidence that the fused physical representation is largely insensitive to the function input.}
 \clearpage
+\begin{center}
+\includegraphics[width=\linewidth,height=0.74\textheight,keepaspectratio]{figureS11.png}
+\end{center}
+\vspace{0.6em}
+{\small\textbf{Figure S11. The fusion signature replicates on experimental structures.} The main analysis was repeated on 177 proteins whose structures are experimental (X-ray or cryo-EM) coordinates from the RCSB rather than AlphaFold predictions, with SS8 and SASA recomputed from those coordinates by the same pipeline. (a) Condition separation (silhouette) across depth tracks the AlphaFold result and reaches its minimum at layer 35 in both. (b) The integration index (mean pairwise CKA) rises with depth in the same way. The function channel stays orthogonal in both sets, with function-pair CKA at or below 0.12 against about 0.99 for fused pairs. Fusion is therefore not an artifact of predicted coordinates.}
+\clearpage
 \end{document}

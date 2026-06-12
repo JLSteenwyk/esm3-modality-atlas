@@ -71,7 +71,9 @@ development, an 892-protein human set for the main results, and a 5,984-protein 
 drawn from 12 organisms spanning eukaryota, bacteria, and archaea for the universality
 test. Structures are AlphaFold-DB models of a single release, SS8 and SASA are computed
 with DSSP (mkdssp 4.6.1, via ESM's `ProteinChain`), and InterPro and Gene Ontology
-annotations are taken from UniProt.
+annotations are taken from UniProt. A fourth dataset of 177 proteins backed by
+experimental (X-ray and cryo-EM) structures from the RCSB replicates the main result
+with non-predicted coordinates.
 
 **Harvesting.** For each (protein, condition) pair, ESM3 runs one forward pass and the
 residual stream is cached at all 48 layers, mean-pooled over residues with the special
@@ -218,10 +220,12 @@ Several limitations bound these conclusions. Only one model was studied, because
 `esm3-sm-open-v1` is the sole openly available multimodal ESM3, larger ESM3 models are
 reachable only through a gated interface, and the ESM2 family is sequence-only and
 cannot support the experiment. Whether the fractional fusion depth scales with model
-capacity therefore remains open. All structures are AlphaFold predictions; although the
-disorder effect is uncorrelated with prediction confidence and so is not an artifact of
-it, a replication on experimental structures would further strengthen the
-structure-derived conditions. Finally, the present work characterises the geometry of
+capacity therefore remains open. The main structures are AlphaFold predictions, but the
+fusion signature is not an artifact of predicted coordinates, because the disorder
+effect is uncorrelated with prediction confidence and the silhouette dip at layer 35,
+the integration-index rise, and the orthogonality of the function channel all reproduce
+on 177 proteins with experimental coordinates (Figure S11). Finally, the present work
+characterises the geometry of
 the residual stream and does not intervene on it, so the analysis is descriptive rather
 than causal.
 

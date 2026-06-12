@@ -94,7 +94,7 @@ universality test. Structures are AlphaFold-DB models of a single release
 \cite{jumper2021,varadi2022}, SS8 and SASA are computed with DSSP (mkdssp 4.6.1, via
 ESM's \texttt{ProteinChain}) \cite{kabsch1983}, and InterPro and Gene Ontology
 annotations are taken from UniProt \cite{uniprot2023,paysanlafosse2023}. A
-fourth dataset of 168 proteins backed by experimental (X-ray and cryo-EM) structures
+fourth dataset of 177 proteins backed by experimental (X-ray and cryo-EM) structures
 from the RCSB replicates the main result with non-predicted coordinates.
 
 \paragraph{Harvesting.} For each (protein, condition) pair, ESM3 runs one forward
@@ -320,10 +320,12 @@ Several limitations bound these conclusions. Only one model was studied, because
 \texttt{esm3-sm-open-v1} is the sole openly available multimodal ESM3, larger ESM3
 models are reachable only through a gated interface, and the ESM2 family
 \cite{lin2023} is sequence-only and cannot support the experiment. Whether the fractional fusion depth
-scales with model capacity therefore remains open. All structures are AlphaFold
-predictions; although the disorder effect is uncorrelated with prediction confidence
-and so is not an artifact of it, a replication on experimental structures would
-further strengthen the structure-derived conditions. Finally, the present work
+scales with model capacity therefore remains open. The main structures are AlphaFold
+predictions, but the fusion signature is not an artifact of predicted coordinates,
+because the disorder effect is uncorrelated with prediction confidence and the
+silhouette dip at layer 35, the integration-index rise, and the orthogonality of the
+function channel all reproduce on 177 proteins with experimental coordinates
+(Figure S11). Finally, the present work
 characterises the geometry of the residual stream and does not intervene on it, so
 the analysis is descriptive rather than causal.
 

@@ -138,3 +138,13 @@ orthogonal, so a small footprint marks low marginal impact, which the geometric 
 decoding results attribute to orthogonality in the case of function. This is causal
 evidence that the fused physical representation is largely insensitive to the function
 input.
+
+**Figure S11. The fusion signature replicates on experimental structures.** The main
+analysis was repeated on 177 proteins whose structures are experimental (X-ray or
+cryo-EM) coordinates from the RCSB rather than AlphaFold predictions, with SS8 and SASA
+recomputed from those coordinates by the same pipeline. (a) Condition separation
+(silhouette) across depth tracks the AlphaFold result and reaches its minimum at layer
+35 in both. (b) The integration index (mean pairwise CKA) rises with depth in the same
+way. The function channel stays orthogonal in both sets, with function-pair CKA at or
+below 0.12 against about 0.99 for fused pairs. Fusion is therefore not an artifact of
+predicted coordinates.

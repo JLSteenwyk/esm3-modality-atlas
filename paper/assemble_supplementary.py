@@ -1,7 +1,7 @@
-"""Assemble the supplementary figure suite (figureS1..S10).
+"""Assemble the supplementary figure suite (figureS1..S11).
 
 Re-plots robustness and breakdown analyses that support, but do not lead, the main
-figures. Output: paper/figures/figureS{1..10}.png at 300 dpi; captions in
+figures. Output: paper/figures/figureS{1..11}.png at 300 dpi; captions in
 paper/figure_captions.md.
 """
 
@@ -403,7 +403,31 @@ def figS10():
     plt.close(fig); print("wrote figureS10.png")
 
 
+def figS11():
+    """Fusion replicates on experimental structures (RCSB) vs AlphaFold."""
+    exp = jload("experimental/metrics.json")["series"]
+    af = jload("scaled/metrics.json")["series"]
+    AFc, EXc = "#94a3b8", INK
+    fig, (axA, axB) = plt.subplots(1, 2, figsize=(8.2, 3.4))
+    axA.plot(af["layers"], af["silhouette"], "-", color=AFc, lw=2,
+             label="AlphaFold (n=892)")
+    axA.plot(exp["layers"], exp["silhouette"], "-", color=EXc, lw=2,
+             label="experimental (n=177)")
+    axA.axvline(35, ls=":", color="0.6", lw=1)
+    axA.set_xlabel("layer"); axA.set_ylabel("condition separation (silhouette)")
+    axA.set_xticks(range(0, 48, 8)); below(axA, ncol=2); panel(axA, "a")
+    axB.plot(af["layers"], af["integration_index"], "-", color=AFc, lw=2,
+             label="AlphaFold (n=892)")
+    axB.plot(exp["layers"], exp["integration_index"], "-", color=EXc, lw=2,
+             label="experimental (n=177)")
+    axB.set_xlabel("layer"); axB.set_ylabel("integration index (mean pairwise CKA)")
+    axB.set_xticks(range(0, 48, 8)); below(axB, ncol=2); panel(axB, "b")
+    fig.tight_layout(rect=(0, 0.04, 1, 1))
+    fig.savefig(OUT / "figureS11.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS11.png")
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     figS1(); figS2(); figS3(); figS4(); figS5(); figS6(); figS7(); figS8(); figS9()
-    figS10()
+    figS10(); figS11()
