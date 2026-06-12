@@ -231,9 +231,26 @@ than causal.
 
 ## 6. Data and code availability
 
-The full pipeline is scripted and configuration-driven, covering curation, structure
-retrieval, DSSP annotation, activation harvesting, aggregation, the metric and control
-analyses, and figure assembly. Colours follow the colorblind-safe `pypubfigs` palette.
+All analysis code is available at `https://github.com/ORGANISATION/REPOSITORY`. The
+pipeline is configuration-driven and provides, as separate scripts, dataset curation,
+structure retrieval from AlphaFold-DB and the RCSB, secondary-structure and
+solvent-accessibility annotation, activation harvesting, the leave-one-out modality
+ablation, aggregation, the metric and control analyses, and figure assembly. Random
+seeds are fixed throughout.
+
+Representations were extracted from `esm3-sm-open-v1`, accessed through the
+EvolutionaryScale `esm` package (version 3.2.1) under its open licence. The principal
+dependencies are Python 3.10, PyTorch 2.6, scikit-learn 1.7, SciPy 1.15, and NumPy 1.26.
+Secondary structure is computed with DSSP (mkdssp 4.6.1) and solvent accessibility with
+the Shrake-Rupley implementation in ESM's `ProteinChain`. Figures use the
+colorblind-safe `pypubfigs` palette.
+
+Input data are public. Structure models are from AlphaFold-DB and experimental
+structures from the RCSB, and sequence, InterPro, and Gene Ontology annotations are from
+UniProt. Accession lists for every dataset, including the exact RCSB entries used for the
+experimental replication, are provided in the repository. The mean-pooled residual-stream
+activations, about 24 gigabytes, are regenerated deterministically by the harvesting
+scripts and are also deposited at Zenodo (`https://doi.org/ZENODO.DOI`).
 
 ## Figure index
 
