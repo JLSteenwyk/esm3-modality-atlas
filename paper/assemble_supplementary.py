@@ -1,7 +1,7 @@
-"""Assemble the supplementary figure suite (figureS1..S9).
+"""Assemble the supplementary figure suite (figureS1..S10).
 
 Re-plots robustness and breakdown analyses that support, but do not lead, the main
-figures. Output: paper/figures/figureS{1..9}.png at 300 dpi; captions in
+figures. Output: paper/figures/figureS{1..10}.png at 300 dpi; captions in
 paper/figure_captions.md.
 """
 
@@ -366,6 +366,40 @@ def figS9():
     plt.close(fig); print("wrote figureS9.png")
 
 
+def figS10():
+    """Causal ablation: withholding function barely moves the fused representation."""
+    d = jload("scaled/ablation.json")
+    layers, series, box = d["layers"], d["series"], d["box_fusion"]
+    fuse = d["fusion_layer"]
+    mods = ["sequence", "structure", "ss8", "sasa", "function"]
+    fig, (axA, axB) = plt.subplots(1, 2, figsize=(8.2, 3.5))
+    for m in mods:
+        axA.plot(layers, series[m]["magnitude"], "-", color=CONDITION_COLOR[m],
+                 lw=2.4 if m == "function" else 1.6, label=CONDITION_LABEL[m])
+    axA.set_xlabel("layer")
+    axA.set_ylabel(r"relative displacement  $||d_X||/||h_\mathrm{all}||$")
+    axA.set_title("withholding each modality, across depth")
+    axA.set_xticks(range(0, 48, 8))
+    below(axA, ncol=3, y=-0.30)
+    panel(axA, "a")
+
+    order = ["structure", "sequence", "sasa", "ss8", "function"]
+    bp = axB.boxplot([box[m] for m in order], widths=0.6, showfliers=False,
+                     patch_artist=True, labels=[CONDITION_LABEL[m] for m in order])
+    for patch, m in zip(bp["boxes"], order):
+        patch.set(facecolor=CONDITION_COLOR[m], alpha=0.55, edgecolor=INK)
+    for med in bp["medians"]:
+        med.set(color=INK)
+    axB.set_ylabel(f"relative displacement at layer {fuse}")
+    axB.set_title("per-protein footprint at the fusion layer")
+    axB.tick_params(axis="x", labelrotation=30, labelsize=7)
+    panel(axB, "b")
+    fig.tight_layout(rect=(0, 0.04, 1, 1))
+    fig.savefig(OUT / "figureS10.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS10.png")
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     figS1(); figS2(); figS3(); figS4(); figS5(); figS6(); figS7(); figS8(); figS9()
+    figS10()

@@ -124,3 +124,17 @@ information is therefore present in the physical subspace, and the geometric
 orthogonality of the function channel reflects how the network organises the
 representation rather than an absence of functional content. The dotted line marks the
 chance rate of 0.33.
+
+**Figure S10. Withholding function barely perturbs the fused representation.** Each
+modality's contribution is the displacement between the all-modalities representation
+and the representation with that modality withheld, measured for all 892 proteins as a
+fraction of the all-modalities vector norm. (a) Relative displacement across depth.
+Withholding function (green) moves the representation far less than withholding
+structure, sequence, or SASA, and the gap widens with depth. (b) Per-protein relative
+displacement at the fusion layer 35. The function footprint, with a median of 0.021, is
+about six times smaller than the structure footprint, with a median of 0.12. The ss8
+footprint is smaller still, but because ss8 is redundant with structure rather than
+orthogonal, so a small footprint marks low marginal impact, which the geometric and
+decoding results attribute to orthogonality in the case of function. This is causal
+evidence that the fused physical representation is largely insensitive to the function
+input.
