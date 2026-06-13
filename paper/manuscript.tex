@@ -88,9 +88,10 @@ is provided as whole-protein InterPro annotations \cite{paysanlafosse2023} filte
 to the 29{,}026-entry vocabulary of the ESM3 function tokeniser.
 
 \paragraph{Datasets.} Three datasets were used, namely a 199-protein human pilot
-for development, an 892-protein human set for the main results, and a 5,984-protein
-set drawn from 12 organisms spanning eukaryota, bacteria, and archaea for the
-universality test. Structures are AlphaFold-DB models of a single release
+for development, an 892-protein human set for the main results, and a set of 5,984
+proteins curated from 12 organisms spanning eukaryota, bacteria, and archaea, of which
+the 5,555 with complete structure and annotation were analysed, for the universality
+test. Structures are AlphaFold-DB models of a single release
 \cite{jumper2021,varadi2022}, SS8 and SASA are computed with DSSP (mkdssp 4.6.1, via
 ESM's \texttt{ProteinChain}) \cite{kabsch1983}, and InterPro and Gene Ontology
 annotations are taken from UniProt \cite{uniprot2023,paysanlafosse2023}. A
@@ -122,7 +123,7 @@ nulls, and protein-bootstrap confidence intervals.
 \subsection{Physical modalities fuse sharply at mid-depth}
 
 Condition separation, measured by silhouette score, rises from 0.32 at the input to
-a maximum of 0.42 at layer 24, then falls to a minimum of 0.156 at layers 35 to 38,
+a maximum of 0.42 at layer 24, then falls to a minimum of 0.156 at layer 35,
 with a partial re-separation at the final layers (Figure~\ref{fig:fig1}b). The
 integration index moves inversely. The transition is sharp and localised, with a
 knee near layer 25, rather than gradual. The accompanying joint-PCA projection
@@ -156,15 +157,15 @@ be derived from the structure, integrates last.
 
 \subsection{The functional-annotation modality never fuses}
 
-Every pairing of the function condition with another condition stays near a CKA of
-0.01 to 0.05 across all 48 layers, while structure reaches a CKA of about 0.99 with
+Every pairing of the function condition with a physical modality stays near a CKA of
+0.01 to 0.07 across all 48 layers, while structure reaches a CKA of about 0.99 with
 the all-modalities reference. This orthogonality does not stem from a degenerate
 representation, because the function cloud retains genuine cross-protein spread, with
-an effective rank of 3.5 to 218 across layers. One alternative explanation is
+an effective rank of 2.8 to 218 across layers. One alternative explanation is
 granularity, because function is the only whole-protein modality whereas the
 physical modalities vary residue by residue. To test this explanation, the
 per-residue \texttt{residue\_annotation} modality of ESM3 was added, driven by
-InterPro residue-site annotations available for 632 of the 892 proteins. Per-residue
+InterPro residue-site annotations available for 631 of the 892 proteins. Per-residue
 functional annotation also stays largely orthogonal, with a CKA against the physical
 modalities near 0.1 and a transient maximum near 0.5, never approaching the CKA of
 about 0.99 that marks fusion (Figure~\ref{fig:fig2}b). Functional information is
@@ -178,11 +179,13 @@ separation.
 never joins. (a) Linear CKA between every condition pair at every layer, with rows
 ordered by fusion onset (the first layer reaching a CKA of 0.5). The structure, SS8,
 and SASA block is warm from layer 0, the sequence pairs warm only after layer 28,
-and the five function pairs (bottom rows) stay near a CKA of 0.01 throughout.
+and the four function-versus-physical pairs (bottom rows) stay near a CKA of 0.01
+throughout, while the function-to-all pair is warm only at the input, where the all
+condition still carries the function signal.
 (b) The whole-protein function track and the per-residue residue-annotation track
 behave alike. Structure reaches a CKA of about 0.99 with the all-modalities
 reference (orange), whereas residue-annotation (black) and function (green) both stay
-below a CKA of 0.5 with the physical modalities.}
+below a CKA of 0.55 with the physical modalities.}
 \label{fig:fig2}
 \end{figure}
 
@@ -198,7 +201,7 @@ consequence of summing modality embeddings.
 \subsection{Fusion holds below the mean-pool}
 
 Recomputed on residue-level representations of a 100-protein subset, the integration
-index rises with depth from 0.19 to 0.59, mirroring the pooled curve
+index rises with depth from 0.18 to 0.59, mirroring the pooled curve
 (Figure~\ref{fig:fig3}b). Fusion is not an averaging artifact.
 
 \subsection{Fusion reorganises variance without approaching isotropy}
@@ -222,7 +225,7 @@ without approaching isotropy. (a) A model with the same architecture but randoml
 initialised weights shows no fusion, with condition separation near 0.62 at every
 layer against the trained model's peak-then-collapse. (b) On residue-level
 representations of a 100-protein subset, the integration index rises with depth
-(0.19 to 0.59), mirroring the pooled curve. (c) Effective rank of the whole cloud
+(0.18 to 0.59), mirroring the pooled curve. (c) Effective rank of the whole cloud
 collapses to about 3 at the layer-24 separation peak, expands to about 85 of 1536 in
 the fusion zone, then contracts, and the whole-cloud and per-condition ranks converge
 once fused.}

@@ -61,15 +61,17 @@ dictionaries are developed in that companion work.
 transformer blocks, model dimension 1536). Six conditions are studied, comprising five
 single-modality inputs (sequence, structure, SS8, SASA, and function) and an
 all-modalities condition in which every modality is supplied jointly. Structure is
-provided as vector-quantised structure tokens derived from coordinates, SS8 and SASA
-are computed by DSSP from the structure, and function is provided as whole-protein
+provided as vector-quantised structure tokens derived from coordinates, SS8 is computed
+by DSSP and SASA by the Shrake-Rupley algorithm from the structure, and function is
+provided as whole-protein
 InterPro annotations filtered to the 29,026-entry vocabulary of the ESM3 function
 tokeniser.
 
 **Datasets.** Three datasets were used, namely a 199-protein human pilot for
-development, an 892-protein human set for the main results, and a 5,984-protein set
-drawn from 12 organisms spanning eukaryota, bacteria, and archaea for the universality
-test. Structures are AlphaFold-DB models of a single release, SS8 and SASA are computed
+development, an 892-protein human set for the main results, and a set of 5,984 proteins
+curated from 12 organisms spanning eukaryota, bacteria, and archaea, of which the 5,555
+with complete structure and annotation were analysed, for the universality test.
+Structures are AlphaFold-DB models of a single release, SS8 and SASA are computed
 with DSSP (mkdssp 4.6.1, via ESM's `ProteinChain`), and InterPro and Gene Ontology
 annotations are taken from UniProt. A fourth dataset of 177 proteins backed by
 experimental (X-ray and cryo-EM) structures from the RCSB replicates the main result
@@ -98,7 +100,7 @@ protein-bootstrap confidence intervals.
 
 ### Physical modalities fuse sharply at mid-depth
 Condition separation, measured by silhouette score, rises from 0.32 at the input to a
-maximum of 0.42 at layer 24, then falls to a minimum of 0.156 at layers 35 to 38, with
+maximum of 0.42 at layer 24, then falls to a minimum of 0.156 at layer 35, with
 a partial re-separation at the final layers (Figure 1b). The integration index moves
 inversely. The transition is sharp and localised, with a knee near layer 25, rather
 than gradual. The accompanying joint-PCA projection shows five separated clusters
@@ -111,15 +113,15 @@ a CKA of 0.2 until layer 28 and rises thereafter (Figure 2a). Sequence, the one 
 carrying information that cannot be derived from the structure, integrates last.
 
 ### The functional-annotation modality never fuses
-Every pairing of the function condition with another condition stays near a CKA of 0.01
-to 0.05 across all 48 layers, while structure reaches a CKA of about 0.99 with the
+Every pairing of the function condition with a physical modality stays near a CKA of
+0.01 to 0.07 across all 48 layers, while structure reaches a CKA of about 0.99 with the
 all-modalities reference. This orthogonality does not stem from a degenerate
 representation, because the function cloud retains genuine cross-protein spread, with an
-effective rank of 3.5 to 218 across layers. One alternative explanation is granularity,
+effective rank of 2.8 to 218 across layers. One alternative explanation is granularity,
 because function is the only whole-protein modality whereas the physical modalities vary
 residue by residue. To test this explanation, the per-residue `residue_annotation`
 modality of ESM3 was added, driven by InterPro residue-site annotations available for
-632 of the 892 proteins. Per-residue functional annotation also stays largely
+631 of the 892 proteins. Per-residue functional annotation also stays largely
 orthogonal, with a CKA against the physical modalities near 0.1 and a transient maximum
 near 0.5, never approaching the CKA of about 0.99 that marks fusion (Figure 2b).
 Functional information is therefore held in a separate subspace irrespective of
@@ -135,7 +137,7 @@ embeddings.
 
 ### Fusion holds below the mean-pool
 Recomputed on residue-level representations of a 100-protein subset, the integration
-index rises with depth from 0.19 to 0.59, mirroring the pooled curve (Figure 3b).
+index rises with depth from 0.18 to 0.59, mirroring the pooled curve (Figure 3b).
 Fusion is not an averaging artifact.
 
 ### Fusion reorganises variance without approaching isotropy

@@ -24,11 +24,13 @@ channel never joins.** (a) Linear CKA between every condition pair at every laye
 with rows ordered by fusion onset (the first layer reaching CKA of 0.5). The three
 structure-derived modalities (structure, SS8, SASA) are mutually aligned from
 layer 0, the sequence pairs warm from near CKA 0.2 to alignment only after
-layer 28, and all five function pairs (bottom rows) stay near CKA 0.01 throughout.
+layer 28, and the four function-versus-physical pairs stay near CKA 0.01 throughout,
+while the function-to-all pair is warm only at the input where the all condition still
+carries the function signal.
 (b) The whole-protein function track and the per-residue residue-annotation track
 behave alike. Across depth, structure reaches CKA of about 0.99 with the
 all-modalities reference (orange), whereas residue-annotation (black) and function
-(green) both stay below CKA 0.5 with the physical modalities. The orthogonality of
+(green) both stay below CKA 0.55 with the physical modalities. The orthogonality of
 functional information therefore reflects its content rather than its whole-protein
 granularity.
 
@@ -37,7 +39,7 @@ variance without approaching isotropy.** (a) A model with the same architecture 
 randomly initialised weights (structure encoder preserved) shows no fusion: condition
 separation stays near 0.62 at every layer, against the trained model's
 peak-then-collapse. (b) Measured on residue-level representations of a 100-protein
-subset, the integration index rises with depth (0.19 to 0.59), mirroring the pooled
+subset, the integration index rises with depth (0.18 to 0.59), mirroring the pooled
 curve. (c) Effective rank of the whole cloud collapses to about 3 at the layer-24
 separation peak, then expands to about 85 (of 1536) in the fusion zone before
 contracting, and the whole-cloud and per-condition ranks converge once fused. The
@@ -95,7 +97,7 @@ by superkingdom over the 50 to 800 residue range.
 (a) The layer-40 all-modalities representation of 5,555 proteins, projected to three
 dimensions and coloured by superkingdom. Eukaryota, bacteria, and archaea are
 intermixed rather than separated. (b) Across depth, condition separation by modality
-(silhouette, reaching 0.42 at layer 24) far exceeds separation by superkingdom, which
+(silhouette, reaching 0.42 at layer 23) far exceeds separation by superkingdom, which
 stays near 0 at every layer (peaking at only 0.08 at layer 33). ESM3 therefore
 represents proteins by their biochemistry rather than their taxonomy.
 
