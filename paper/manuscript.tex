@@ -128,7 +128,9 @@ with a partial re-separation at the final layers (Figure~\ref{fig:fig1}b). The
 integration index moves inversely. The transition is sharp and localised, with a
 knee near layer 25, rather than gradual. The accompanying joint-PCA projection
 shows five separated clusters through layer 24 that collapse into one cloud by
-layer 35 (Figure~\ref{fig:fig1}a).
+layer 35 (Figure~\ref{fig:fig1}a). These metrics are converged at the sample size
+used (Figure S1) and sit far above label-permutation nulls at every layer
+(Figure S2).
 
 \begin{figure}[t]
 \centering
@@ -152,7 +154,8 @@ inversely. The shaded band marks the fusion transition (layers 25 to 35).}
 Per-pair CKA shows that the structure-derived modalities (structure, SS8, and SASA)
 are mutually aligned from layer 0, whereas every pairing that involves sequence
 stays near a CKA of 0.2 until layer 28 and rises thereafter
-(Figure~\ref{fig:fig2}a). Sequence, the one channel carrying information that cannot
+(Figure~\ref{fig:fig2}a; the full condition-by-condition matrix at seven depths is
+shown in Figure S5). Sequence, the one channel carrying information that cannot
 be derived from the structure, integrates last.
 
 \subsection{The functional-annotation modality never fuses}
@@ -245,14 +248,16 @@ structural uncertainty.
 
 \subsection{Fusion is universal across the tree of life}
 
-Across 5,555 proteins from 12 organisms spanning all three superkingdoms, the pooled
-fusion curve is nearly identical to the human-only result, with a silhouette maximum
+Across 5,555 proteins from 12 organisms spanning all three superkingdoms (Figure S6),
+the pooled fusion curve is nearly identical to the human-only result, with a silhouette maximum
 of 0.42 at layer 23 and a minimum of 0.152 at layer 35 against 0.42 at layer 24 and
 0.156 at layer 35. Stratified by superkingdom, the eukaryota, bacteria, and archaea
 curves show the same peak-then-collapse and reach minimum separation at layer 35
 (Figure~\ref{fig:fig4}b), with maxima of 0.42, 0.48, and 0.50 and minima of 0.164,
 0.151, and 0.149. Every one of the 12 organisms reaches its minimum at layer 35,
-with a standard deviation of 0 (Figure S4). Multimodal fusion is therefore a
+with a standard deviation of 0 (Figure S4). Superkingdoms are intermixed in the
+representation rather than separated, so the organisation is by modality and not by
+source organism (Figure S7). Multimodal fusion is therefore a
 universal, depth-locked property of ESM3 and not an artifact of the curated human
 set.
 
@@ -273,8 +278,7 @@ layer 35.}
 
 \section{Discussion}
 
-ESM3 organises its inputs into two representational regimes. The four geometry and
-sequence modalities collapse into a shared, low-dimensional physical subspace at
+ESM3 organises its inputs into two representational regimes. The four physical modalities collapse into a shared, low-dimensional subspace at
 mid-depth, whereas the functional-annotation modality occupies a subspace that stays
 orthogonal throughout the network. The mid-network timing of physical fusion, the
 late entry of sequence, and the dependence of fusion depth on secondary-structure
