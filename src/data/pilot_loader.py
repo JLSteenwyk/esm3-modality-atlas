@@ -1,7 +1,7 @@
 """Read the curated multimodal pilot dataset.
 
-The pilot lives in ``data/pilot/`` (a symlink to INTERPRETABILITY/data/pilot/).
-938 proteins are catalogued in ``annotations/metadata.json``; 199 have PDB
+The pilot lives in ``data/pilot/``. 938 proteins are catalogued in
+``annotations/metadata.json``; 199 have PDB
 files staged in ``structures/``. We restrict to that 199-protein cohort so
 every protein supports every modality condition uniformly.
 

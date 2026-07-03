@@ -256,7 +256,7 @@ structures from the RCSB, and sequence, InterPro, and Gene Ontology annotations 
 UniProt. Accession lists for every dataset, including the exact RCSB entries used for the
 experimental replication, are provided in the repository. The mean-pooled residual-stream
 activations, about 24 gigabytes, are regenerated deterministically by the harvesting
-scripts and are also deposited at Zenodo (`https://doi.org/ZENODO.DOI`).
+scripts and are also deposited at figshare (`https://doi.org/FIGSHARE.DOI`).
 
 ## Figure index
 

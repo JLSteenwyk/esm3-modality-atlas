@@ -10,8 +10,7 @@ ESM-3 architecture:
 
 d_model=1536, n_heads=24, n_layers=48, RoPE.
 
-Lifted from INTERPRETABILITY/src/models/esm3_hooks.py and trimmed to
-the residual-stream extraction path we need here.
+Trimmed to the residual-stream extraction path this project needs.
 """
 
 from __future__ import annotations

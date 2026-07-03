@@ -1,8 +1,6 @@
 """Reusable pieces for the reveal-then-spin GIF aesthetic.
 
-Lifted in spirit from LLM_MECH_INTERP/scripts/render_spinning_clusters.py
-and parameterized over our 5 ESM-3 modality conditions instead of the
-9 epistemic states it was originally written for.
+Parameterized over the ESM-3 modality conditions.
 """
 
 from __future__ import annotations
@@ -19,8 +17,7 @@ from .palette import (
     INK,
 )
 
-# Timing — kept consistent with the LLM_MECH_INTERP aesthetic so any
-# cross-project viewer "reads" the format on sight.
+# Timing.
 FPS = 24
 N_INTRO = 40          # ~1.7 s intro reveal
 N_SPIN = 144          # ~6 s eased revolution
