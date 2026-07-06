@@ -111,8 +111,8 @@ def figS2():
     plt.close(fig); print("wrote figureS2.png")
 
 
-# S3 — modality-identity probe ------------------------------------------------
-def figS3():
+# S4 — modality-identity probe ------------------------------------------------
+def figS4():
     dg = jload("scaled/diagnostics.json")
     L = dg["meta"]["layers"]; per = dg["per_layer"]; x = np.array(L)
     fig, ax = plt.subplots(figsize=(5.2, 3.4))
@@ -130,12 +130,12 @@ def figS3():
     ax.text(L[-1], chance + 0.02, "chance", ha="right", fontsize=6.5, color="#94a3b8")
     ax.set_ylim(0, 1.03); ax.set_xlabel("layer"); ax.set_ylabel("decodability")
     ax.set_xticks(range(0, 48, 8)); below(ax, ncol=4, fontsize=6)
-    fig.tight_layout(rect=(0,0.05,1,1)); fig.savefig(OUT / "figureS3.png", bbox_inches="tight")
-    plt.close(fig); print("wrote figureS3.png")
+    fig.tight_layout(rect=(0,0.05,1,1)); fig.savefig(OUT / "figureS4.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS4.png")
 
 
-# S4 — per-organism universality ----------------------------------------------
-def figS4():
+# S6 — per-organism universality ----------------------------------------------
+def figS6():
     s = jload("diverse/stratified.json"); L = np.array(s["layers"])
     cur = json.loads((ROOT / "data/diverse/curation_summary.json").read_text())
     o2k = {o: v["superkingdom"] for o, v in cur["per_organism"].items()}
@@ -153,12 +153,12 @@ def figS4():
     ax.axvline(35, ls=":", color="0.5", lw=1)
     ax.set_xlabel("layer"); ax.set_ylabel("silhouette"); ax.set_xticks(range(0, 48, 8))
     below(ax, ncol=4, fontsize=7)
-    fig.tight_layout(rect=(0,0.05,1,1)); fig.savefig(OUT / "figureS4.png", bbox_inches="tight")
-    plt.close(fig); print("wrote figureS4.png")
+    fig.tight_layout(rect=(0,0.05,1,1)); fig.savefig(OUT / "figureS6.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS6.png")
 
 
-# S5 — per-layer condition x condition CKA ------------------------------------
-def figS5():
+# S3 — per-layer condition x condition CKA ------------------------------------
+def figS3():
     d = jload("scaled/metrics.json")
     conds = [c for c in CONDITIONS if c in d["meta"]["conditions"]]
     short = [CONDITION_LABEL[c].replace("All modalities", "All") for c in conds]
@@ -174,12 +174,12 @@ def figS5():
         ax.set_yticklabels(short if ax is axes[0] else [], fontsize=4.5)
         ax.tick_params(length=0)
     fig.colorbar(im, ax=axes, fraction=0.01, pad=0.01).set_label("CKA", fontsize=7)
-    fig.savefig(OUT / "figureS5.png", bbox_inches="tight")
-    plt.close(fig); print("wrote figureS5.png")
+    fig.savefig(OUT / "figureS3.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS3.png")
 
 
-# S6 — diverse dataset composition --------------------------------------------
-def figS6():
+# S5 — diverse dataset composition --------------------------------------------
+def figS5():
     meta = json.loads((ROOT / "data/diverse/metadata.json").read_text())
     kcol = {"eukaryota": "#648FFF", "bacteria": "#FE6100", "archaea": "#009E73"}
     from collections import Counter, defaultdict
@@ -199,8 +199,8 @@ def figS6():
                  label=f"{king} (n={len(lens[king])})")
     axB.set_xlabel("protein length (residues)"); axB.set_ylabel("count")
     below(axB, ncol=3); panel(axB, "b")
-    fig.tight_layout(); fig.savefig(OUT / "figureS6.png", bbox_inches="tight")
-    plt.close(fig); print("wrote figureS6.png")
+    fig.tight_layout(); fig.savefig(OUT / "figureS5.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS5.png")
 
 
 # S7 — the representation is organism-agnostic --------------------------------
@@ -258,7 +258,7 @@ def figS7():
     plt.close(fig); print("wrote figureS7.png")
 
 
-def figS8():
+def figS10():
     """Orphan test: function stays orthogonal whether or not it is redundant."""
     from scipy.stats import mannwhitneyu, spearmanr
     from sklearn.decomposition import PCA
@@ -323,11 +323,11 @@ def figS8():
     axB.set_title(f"alignment by characterisation ($r$={r_ipr:+.2f})")
     panel(axA, "a"); panel(axB, "b")
     fig.tight_layout()
-    fig.savefig(OUT / "figureS8.png", bbox_inches="tight")
-    plt.close(fig); print("wrote figureS8.png")
+    fig.savefig(OUT / "figureS10.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS10.png")
 
 
-def figS9():
+def figS8():
     """Information vs geometry: function content lives in the physical subspace."""
     d = jload("scaled/subspace_decode.json")
     res, L = d["results"], d["layers"]
@@ -365,11 +365,11 @@ def figS9():
     below(axB, ncol=1, y=-0.42)
     panel(axB, "b")
     fig.tight_layout(rect=(0, 0.06, 1, 1))
-    fig.savefig(OUT / "figureS9.png", bbox_inches="tight")
-    plt.close(fig); print("wrote figureS9.png")
+    fig.savefig(OUT / "figureS8.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS8.png")
 
 
-def figS10():
+def figS9():
     """Causal ablation: withholding function barely moves the fused representation."""
     d = jload("scaled/ablation.json")
     layers, series, box = d["layers"], d["series"], d["box_fusion"]
@@ -398,8 +398,8 @@ def figS10():
     axB.tick_params(axis="x", labelrotation=30, labelsize=7)
     panel(axB, "b")
     fig.tight_layout(rect=(0, 0.04, 1, 1))
-    fig.savefig(OUT / "figureS10.png", bbox_inches="tight")
-    plt.close(fig); print("wrote figureS10.png")
+    fig.savefig(OUT / "figureS9.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS9.png")
 
 
 def figS11():
