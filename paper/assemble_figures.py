@@ -220,30 +220,46 @@ def figure3():
 # Figure 4 — fusion depth tracks secondary structure; universal across life
 # --------------------------------------------------------------------------- #
 def figure4():
-    fig, (axA, axB) = plt.subplots(1, 2, figsize=(7.2, 3.2))
     b = jload("scaled/biology_breakdown.json")
-    cs = b["category_onset"]
-    order = sorted(cs, key=lambda k: cs[k]["mean_onset"])
-    means = [cs[k]["mean_onset"] for k in order]
-    err = [cs[k]["std_onset"] / np.sqrt(cs[k]["n"]) for k in order]
-    axA.barh(range(len(order)), means, xerr=err, color=SEQc, ecolor="#475569",
-             edgecolor="none", height=0.7)
-    axA.set_yticks(range(len(order))); axA.set_yticklabels(order, fontsize=7)
-    axA.set_xlabel("fusion-onset layer"); axA.set_xlim(20, 30)
+    pp = b["per_protein"]
+    onset = np.array(pp["onset"], dtype=float)
+    coil = np.array(pp["coil_fraction"], dtype=float)
+    helix = np.array(pp["helix_fraction"], dtype=float)
+    cor = {c["vs"]: c for c in b["correlations"]}
+
+    fig, (axA, axB, axC) = plt.subplots(1, 3, figsize=(10.8, 3.3))
+
+    def fmt_p(p):
+        return "p < 0.001" if p < 1e-3 else f"p = {p:.2f}"
+
+    def scatter(ax, xv, key, xlabel, pt_color):
+        r, p = cor[key]["spearman_r"], cor[key]["p_value"]
+        ax.scatter(xv, onset, s=8, alpha=0.35, color=pt_color, edgecolors="none")
+        m, c = np.polyfit(xv, onset, 1)                       # linear trend guide
+        xs = np.array([xv.min(), xv.max()])
+        ax.plot(xs, m * xs + c, "-", color=INK, lw=1.6)
+        ax.set_xlabel(xlabel); ax.set_ylabel("fusion-onset layer")
+        ax.text(0.05, 0.06, f"Spearman r = {r:+.2f}\n{fmt_p(p)}",
+                transform=ax.transAxes, va="bottom", ha="left", fontsize=7.5,
+                bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="0.8", lw=0.6))
+
+    scatter(axA, coil, "coil_fraction", "coil fraction", "#648FFF")
     panel(axA, "a")
+    scatter(axB, helix, "helix_fraction", "helix fraction", "#FE6100")
+    panel(axB, "b")
 
     s = jload("diverse/stratified.json")
     x = np.array(s["layers"])
     kcol = {"all": INK, "eukaryota": "#648FFF", "bacteria": "#FE6100",
             "archaea": "#009E73"}
     for g in ["all", "eukaryota", "bacteria", "archaea"]:
-        axB.plot(x, s["series"][g]["silhouette"], "-", color=kcol[g],
+        axC.plot(x, s["series"][g]["silhouette"], "-", color=kcol[g],
                  lw=2.2 if g == "all" else 1.4,
                  label=f"{g} (n={s['n_by_group'][g]})")
-    axB.set_xlabel("layer"); axB.set_ylabel("silhouette")
-    axB.set_xticks(range(0, 48, 8)); below(axB, ncol=2)
-    axB.axvspan(34, 36, color="0.85", alpha=0.6, zorder=0)
-    panel(axB, "b")
+    axC.set_xlabel("layer"); axC.set_ylabel("silhouette")
+    axC.set_xticks(range(0, 48, 8)); below(axC, ncol=2)
+    axC.axvspan(34, 36, color="0.85", alpha=0.6, zorder=0)
+    panel(axC, "c")
     fig.tight_layout(rect=(0, 0.06, 1, 1))
     fig.savefig(OUT / "figure4.png", bbox_inches="tight")
     plt.close(fig)

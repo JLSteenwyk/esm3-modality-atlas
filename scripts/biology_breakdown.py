@@ -144,6 +144,16 @@ def main() -> None:
         "n_proteins": len(accs), "layers": layers,
         "population_alignment": [float(align[:, k].mean()) for k in range(n_layers)],
         "correlations": correlations, "category_onset": cat_stats,
+        "per_protein": {
+            "accession": accs,
+            "onset": onset.tolist(),
+            "length": length.tolist(),
+            "coil_fraction": coil.tolist(),
+            "helix_fraction": helix.tolist(),
+            "strand_fraction": strand.tolist(),
+            "mean_plddt": [None if not np.isfinite(v) else float(v) for v in plddt],
+            "category": cats,
+        },
     }, indent=2))
     print(f"\nwrote {OUT_JSON.relative_to(ROOT)}")
 

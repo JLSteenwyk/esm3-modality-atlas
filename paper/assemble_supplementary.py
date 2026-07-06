@@ -1,7 +1,7 @@
-"""Assemble the supplementary figure suite (figureS1..S11).
+"""Assemble the supplementary figure suite (figureS1..S12).
 
 Re-plots robustness and breakdown analyses that support, but do not lead, the main
-figures. Output: paper/figures/figureS{1..11}.png at 300 dpi.
+figures. Output: paper/figures/figureS{1..12}.png at 300 dpi.
 """
 
 from __future__ import annotations
@@ -134,8 +134,25 @@ def figS4():
     plt.close(fig); print("wrote figureS4.png")
 
 
-# S6 — per-organism universality ----------------------------------------------
-def figS6():
+# S5 — fusion-onset depth by protein category ---------------------------------
+def figS5():
+    b = jload("scaled/biology_breakdown.json")
+    cs = b["category_onset"]
+    order = sorted(cs, key=lambda k: cs[k]["mean_onset"])
+    means = [cs[k]["mean_onset"] for k in order]
+    err = [cs[k]["std_onset"] / np.sqrt(cs[k]["n"]) for k in order]
+    labels = [k.replace("_", " ") + f" (n={cs[k]['n']})" for k in order]
+    fig, ax = plt.subplots(figsize=(5.6, 3.6))
+    ax.barh(range(len(order)), means, xerr=err, color=SEQc, ecolor="#475569",
+            edgecolor="none", height=0.7)
+    ax.set_yticks(range(len(order))); ax.set_yticklabels(labels, fontsize=7.5)
+    ax.set_xlabel("mean fusion-onset layer"); ax.set_xlim(20, 30)
+    fig.tight_layout(); fig.savefig(OUT / "figureS5.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS5.png")
+
+
+# S7 — per-organism universality ----------------------------------------------
+def figS7():
     s = jload("diverse/stratified.json"); L = np.array(s["layers"])
     cur = json.loads((ROOT / "data/diverse/curation_summary.json").read_text())
     o2k = {o: v["superkingdom"] for o, v in cur["per_organism"].items()}
@@ -153,8 +170,8 @@ def figS6():
     ax.axvline(35, ls=":", color="0.5", lw=1)
     ax.set_xlabel("layer"); ax.set_ylabel("silhouette"); ax.set_xticks(range(0, 48, 8))
     below(ax, ncol=4, fontsize=7)
-    fig.tight_layout(rect=(0,0.05,1,1)); fig.savefig(OUT / "figureS6.png", bbox_inches="tight")
-    plt.close(fig); print("wrote figureS6.png")
+    fig.tight_layout(rect=(0,0.05,1,1)); fig.savefig(OUT / "figureS7.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS7.png")
 
 
 # S3 — per-layer condition x condition CKA ------------------------------------
@@ -178,8 +195,8 @@ def figS3():
     plt.close(fig); print("wrote figureS3.png")
 
 
-# S5 — diverse dataset composition --------------------------------------------
-def figS5():
+# S6 — diverse dataset composition --------------------------------------------
+def figS6():
     meta = json.loads((ROOT / "data/diverse/metadata.json").read_text())
     kcol = {"eukaryota": "#648FFF", "bacteria": "#FE6100", "archaea": "#009E73"}
     from collections import Counter, defaultdict
@@ -199,12 +216,12 @@ def figS5():
                  label=f"{king} (n={len(lens[king])})")
     axB.set_xlabel("protein length (residues)"); axB.set_ylabel("count")
     below(axB, ncol=3); panel(axB, "b")
-    fig.tight_layout(); fig.savefig(OUT / "figureS5.png", bbox_inches="tight")
-    plt.close(fig); print("wrote figureS5.png")
+    fig.tight_layout(); fig.savefig(OUT / "figureS6.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS6.png")
 
 
-# S7 — the representation is organism-agnostic --------------------------------
-def figS7():
+# S8 — the representation is organism-agnostic --------------------------------
+def figS8():
     from sklearn.decomposition import PCA
     from sklearn.metrics import silhouette_score
     BY = ROOT / "activations" / "diverse" / "by_layer"
@@ -254,11 +271,11 @@ def figS7():
     below(axB, ncol=2)
     panel(axB, "b")
     fig.tight_layout(rect=(0, 0.04, 1, 1))
-    fig.savefig(OUT / "figureS7.png", bbox_inches="tight")
-    plt.close(fig); print("wrote figureS7.png")
+    fig.savefig(OUT / "figureS8.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS8.png")
 
 
-def figS10():
+def figS11():
     """Orphan test: function stays orthogonal whether or not it is redundant."""
     from scipy.stats import mannwhitneyu, spearmanr
     from sklearn.decomposition import PCA
@@ -323,11 +340,11 @@ def figS10():
     axB.set_title(f"alignment by characterisation ($r$={r_ipr:+.2f})")
     panel(axA, "a"); panel(axB, "b")
     fig.tight_layout()
-    fig.savefig(OUT / "figureS10.png", bbox_inches="tight")
-    plt.close(fig); print("wrote figureS10.png")
+    fig.savefig(OUT / "figureS11.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS11.png")
 
 
-def figS8():
+def figS9():
     """Information vs geometry: function content lives in the physical subspace."""
     d = jload("scaled/subspace_decode.json")
     res, L = d["results"], d["layers"]
@@ -365,11 +382,11 @@ def figS8():
     below(axB, ncol=1, y=-0.42)
     panel(axB, "b")
     fig.tight_layout(rect=(0, 0.06, 1, 1))
-    fig.savefig(OUT / "figureS8.png", bbox_inches="tight")
-    plt.close(fig); print("wrote figureS8.png")
+    fig.savefig(OUT / "figureS9.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS9.png")
 
 
-def figS9():
+def figS10():
     """Causal ablation: withholding function barely moves the fused representation."""
     d = jload("scaled/ablation.json")
     layers, series, box = d["layers"], d["series"], d["box_fusion"]
@@ -398,11 +415,11 @@ def figS9():
     axB.tick_params(axis="x", labelrotation=30, labelsize=7)
     panel(axB, "b")
     fig.tight_layout(rect=(0, 0.04, 1, 1))
-    fig.savefig(OUT / "figureS9.png", bbox_inches="tight")
-    plt.close(fig); print("wrote figureS9.png")
+    fig.savefig(OUT / "figureS10.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS10.png")
 
 
-def figS11():
+def figS12():
     """Fusion replicates on experimental structures (RCSB) vs AlphaFold."""
     exp = jload("experimental/metrics.json")["series"]
     af = jload("scaled/metrics.json")["series"]
@@ -422,11 +439,11 @@ def figS11():
     axB.set_xlabel("layer"); axB.set_ylabel("integration index (mean pairwise CKA)")
     axB.set_xticks(range(0, 48, 8)); below(axB, ncol=2); panel(axB, "b")
     fig.tight_layout(rect=(0, 0.04, 1, 1))
-    fig.savefig(OUT / "figureS11.png", bbox_inches="tight")
-    plt.close(fig); print("wrote figureS11.png")
+    fig.savefig(OUT / "figureS12.png", bbox_inches="tight")
+    plt.close(fig); print("wrote figureS12.png")
 
 
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
-    figS1(); figS2(); figS3(); figS4(); figS5(); figS6(); figS7(); figS8(); figS9()
-    figS10(); figS11()
+    figS1(); figS2(); figS3(); figS4(); figS5(); figS6(); figS7(); figS8()
+    figS9(); figS10(); figS11(); figS12()
