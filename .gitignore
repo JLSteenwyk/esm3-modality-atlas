@@ -37,3 +37,6 @@ paper/*.bbl
 /overleaf.zip
 
 data/experimental/
+
+# figshare deposit staging (built locally, uploaded to figshare)
+/figshare/
