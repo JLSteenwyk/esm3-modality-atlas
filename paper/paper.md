@@ -237,7 +237,7 @@ than causal.
 
 ## 6. Data and code availability
 
-All analysis code is available at `https://github.com/ORGANISATION/REPOSITORY`. The
+All analysis code is available at `https://github.com/JLSteenwyk/esm3-modality-atlas`. The
 pipeline is configuration-driven and provides, as separate scripts, dataset curation,
 structure retrieval from AlphaFold-DB and the RCSB, secondary-structure and
 solvent-accessibility annotation, activation harvesting, the leave-one-out modality
