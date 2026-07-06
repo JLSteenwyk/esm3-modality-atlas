@@ -1,8 +1,7 @@
 """Assemble the supplementary figure suite (figureS1..S11).
 
 Re-plots robustness and breakdown analyses that support, but do not lead, the main
-figures. Output: paper/figures/figureS{1..11}.png at 300 dpi; captions in
-paper/figure_captions.md.
+figures. Output: paper/figures/figureS{1..11}.png at 300 dpi.
 """
 
 from __future__ import annotations

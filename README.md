@@ -28,7 +28,7 @@ src/
 scripts/    the pipeline (curation, retrieval, annotation, harvesting,
             aggregation, metrics, controls, figure assembly)
 config/     configuration-driven run specs (harvest.json and variants)
-paper/      manuscript.tex, paper.md, references.bib, captions, build scripts
+paper/      figure-assembly scripts and the generated publication figures
 figures/    assembled figures and hero GIFs
 results/    metric and control JSON emitted by the analyses
 data/        accession lists for every dataset (structures are fetched, not stored)
@@ -36,8 +36,7 @@ data/        accession lists for every dataset (structures are fetched, not stor
 
 Large artifacts are not tracked. The residual-stream activations (about 24 GB)
 and the fetched structure trees are regenerated deterministically by the scripts;
-the activations are also deposited at figshare (see the manuscript). Random seeds
-are fixed throughout.
+the activations are also deposited at figshare. Random seeds are fixed throughout.
 
 ## Datasets
 
@@ -105,16 +104,8 @@ harvesting (`harvest_scaled.py`, `harvest_ablation.py`), aggregation
 `compute_diagnostics.py`, `subspace_decode.py`, `analyze_ablation.py`,
 `test_orphan.py`, `plot_randinit_control.py`), and figure assembly
 (`embed_3d.py`, `render_*.py`, and `paper/assemble_figures.py` /
-`paper/assemble_supplementary.py`).
-
-## Building the paper
-
-```
-bash paper/build.sh
-```
-
-compiles both `manuscript.pdf` and the supplementary PDF from the tracked
-figures and captions.
+`paper/assemble_supplementary.py`). The publication figures produced by those
+last two scripts are tracked under `paper/figures/`.
 
 ## License
 

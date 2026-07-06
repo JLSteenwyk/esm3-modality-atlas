@@ -16,9 +16,24 @@ figures/scaled/embed/
 data/diverse/
 figures/diverse/embed/
 
-# compiled LaTeX (regenerate with paper/build.sh)
+# manuscript writing is kept out of this reproducibility repo (it lives in Overleaf)
+paper/manuscript.tex
+paper/paper.md
+paper/references.bib
+paper/supplementary.tex
+paper/figure_captions.md
+paper/build.sh
+paper/build_supplementary.py
+
+# compiled LaTeX and bibliography intermediates
 paper/*.pdf
 paper/*.aux
 paper/*.log
 paper/*.out
+paper/*.bbl
+
+# local Overleaf export bundle
+/overleaf/
+/overleaf.zip
+
 data/experimental/

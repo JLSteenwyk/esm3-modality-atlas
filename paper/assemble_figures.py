@@ -2,8 +2,7 @@
 
 Re-plots every panel from the committed result JSONs (and the joint-PCA
 embeddings) into consistent, publication-styled composites with panel letters,
-written to paper/figures/figure{1..4}.png at 300 dpi. Captions live in
-paper/figure_captions.md.
+written to paper/figures/figure{1..4}.png at 300 dpi.
 """
 
 from __future__ import annotations
