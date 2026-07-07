@@ -30,7 +30,7 @@ from tqdm import tqdm
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from src.data.pilot_loader import iter_scaled_proteins  # noqa: E402
+from src.data.protein_loader import iter_scaled_proteins  # noqa: E402
 from src.models import load_esm3  # noqa: E402
 
 from harvest_scaled import harvest_protein  # noqa: E402

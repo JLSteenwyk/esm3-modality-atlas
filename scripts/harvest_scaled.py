@@ -1,6 +1,6 @@
 """Scaled, config-driven harvest of ESM3 residual-stream activations.
 
-The publication-scale version of harvest_activations.py:
+The publication-scale multimodal activation harvest:
   · reads config/harvest.json (dataset paths, conditions, layers, pooling)
   · 6 conditions incl. the function modality (InterPro whole-protein annotations)
   · all 48 layers, mean-pooled (cheap, the core atlas)
@@ -35,7 +35,7 @@ sys.path.insert(0, str(ROOT))
 
 from esm.utils.types import FunctionAnnotation  # noqa: E402
 
-from src.data.pilot_loader import iter_scaled_proteins  # noqa: E402
+from src.data.protein_loader import iter_scaled_proteins  # noqa: E402
 from src.models import load_esm3, run_modality_condition, tokenize_protein  # noqa: E402
 
 
