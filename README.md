@@ -14,8 +14,8 @@ layer 35), and that the functional-annotation channel stays geometrically
 orthogonal at every depth while its information remains recoverable from the
 physical subspace.
 
-This code accompanies the manuscript in `paper/`. A companion sparse-autoencoder
-study is referenced there.
+This code accompanies the manuscript. A companion sparse-autoencoder study is
+referenced in it.
 
 ## Repository layout
 
@@ -28,7 +28,6 @@ src/
 scripts/    the pipeline (curation, retrieval, annotation, harvesting,
             aggregation, metrics, controls, figure assembly)
 config/     configuration-driven run specs (harvest.json and variants)
-paper/      figure-assembly scripts and the generated publication figures
 figures/    assembled figures and hero GIFs
 results/    metric and control JSON emitted by the analyses
 data/        accession lists for every dataset (structures are fetched, not stored)
@@ -102,10 +101,8 @@ The individual stages, in order, are dataset curation
 harvesting (`harvest_scaled.py`, `harvest_ablation.py`), aggregation
 (`aggregate_activations.py`), metrics and controls (`compute_metrics.py`,
 `compute_diagnostics.py`, `subspace_decode.py`, `analyze_ablation.py`,
-`test_orphan.py`, `plot_randinit_control.py`), and figure assembly
-(`embed_3d.py`, `render_*.py`, and `paper/assemble_figures.py` /
-`paper/assemble_supplementary.py`). The publication figures produced by those
-last two scripts are tracked under `paper/figures/`.
+`test_orphan.py`, `plot_randinit_control.py`), and figure embedding
+(`embed_3d.py`, `render_*.py`).
 
 ## License
 

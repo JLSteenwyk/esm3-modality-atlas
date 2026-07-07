@@ -16,22 +16,9 @@ figures/scaled/embed/
 data/diverse/
 figures/diverse/embed/
 
-# manuscript writing is kept out of this reproducibility repo (it lives in Overleaf)
-paper/manuscript.tex
-paper/paper.md
-paper/references.bib
-paper/sn-bibliography.bib
-paper/supplementary.tex
-paper/figure_captions.md
-paper/build.sh
-paper/build_supplementary.py
-
-# compiled LaTeX and bibliography intermediates
-paper/*.pdf
-paper/*.aux
-paper/*.log
-paper/*.out
-paper/*.bbl
+# the paper (manuscript, figures, and figure-assembly) lives outside this
+# reproducibility repo (in Overleaf); keep the whole directory out
+paper/
 
 # local Overleaf export bundle
 /overleaf/
