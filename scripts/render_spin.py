@@ -1,6 +1,9 @@
 """Render the per-layer spinning-modality GIFs.
 
-Reads the per-layer PCA coords from figures/embed/per_layer/ and produces:
+Pass --scaled to render from the scaled 6-modality atlas (which includes the
+function condition) at the seven snapshot layers. Without it, renders the pilot
+five-condition run. Reads the per-layer PCA coords from figures/embed/per_layer/
+(or figures/scaled/embed/per_layer/ with --scaled) and produces:
 
   figures/gifs/spin_layer_{L:02d}.gif   one square panel per layer
   figures/gifs/spin_all_layers.gif      multi-panel grid showing all 7 layers
@@ -9,6 +12,7 @@ Reads the per-layer PCA coords from figures/embed/per_layer/ and produces:
 
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -39,6 +43,9 @@ from src.viz import (  # noqa: E402
 
 IN_DIR = ROOT / "figures" / "embed" / "per_layer"
 OUT_DIR = ROOT / "figures" / "gifs"
+
+# The scaled 6-modality atlas embeds all 48 layers; the hero grid uses these seven.
+SNAPSHOT_LAYERS = [0, 8, 16, 24, 32, 40, 47]
 
 
 def _load(layer_idx: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -157,11 +164,30 @@ def render_all_layers_hero(layers: list[int], dpi: int = 95) -> Path:
 
 
 def main() -> None:
+    global IN_DIR
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--scaled", action="store_true",
+                    help="render from the scaled 6-modality run (includes function); "
+                         "reads figures/scaled/embed/per_layer, snapshot layers only")
+    ap.add_argument("--layers", type=int, nargs="+", default=None,
+                    help="explicit layer list (overrides the default)")
+    args = ap.parse_args()
+
+    if args.scaled:
+        IN_DIR = ROOT / "figures" / "scaled" / "embed" / "per_layer"
+
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    layers = sorted(int(p.stem.split("_")[-1])
-                    for p in IN_DIR.glob("layer_*.npz"))
-    if not layers:
+    available = sorted(int(p.stem.split("_")[-1])
+                       for p in IN_DIR.glob("layer_*.npz"))
+    if not available:
         raise SystemExit(f"No per-layer NPZs in {IN_DIR}; run embed_3d.py first.")
+    if args.layers is not None:
+        layers = [L for L in args.layers if L in available]
+    elif args.scaled:
+        layers = [L for L in SNAPSHOT_LAYERS if L in available]
+    else:
+        layers = available
+    print(f"input: {IN_DIR.relative_to(ROOT)}")
     print(f"layers: {layers}")
 
     print("\nrendering per-layer GIFs ...")
